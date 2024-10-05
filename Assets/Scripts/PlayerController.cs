@@ -113,10 +113,7 @@ public class PlayerController : MonoBehaviour
                     Rigidbody rb = objectHit.GetComponent<Rigidbody>();
                     rb.useGravity = false;
                     rb.freezeRotation = true;
-
                     holdRotation = Quaternion.Inverse(transform.rotation) * objectHit.rotation;
-
-                    print(holdRotation.eulerAngles);
                 }
                 else if (objectHit.CompareTag("Guy"))
                 {
