@@ -31,7 +31,11 @@ public class PlayerController : MonoBehaviour
     {
         Movement();
         CameraMovement();
-        HandleInteract();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact();
+        }
 
         if (Input.GetKeyDown("r"))
         {
@@ -68,33 +72,34 @@ public class PlayerController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(-cameraRotation, 0, 0.0f);
     }
 
-    private void HandleInteract()
+    private void Interact()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        // Drop object if holding one, otherwise try to grab a new object
+        if (heldObject)
         {
-            // Drop object if holding one, otherwise try to grab a new object
-            if (heldObject)
+            Rigidbody rb = heldObject.GetComponent<Rigidbody>();
+            rb.useGravity = true;
+            heldObject = null;
+            rb.freezeRotation = false;
+        }
+        else
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, grabRange))
             {
-                Rigidbody rb = heldObject.GetComponent<Rigidbody>();
-                rb.useGravity = true;
-                heldObject = null;
-                rb.freezeRotation = false;
-            }
-            else
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit, grabRange))
-                {
-                    Transform objectHit = hit.transform;
+                Transform objectHit = hit.transform;
 
-                    if (objectHit.CompareTag("Grabbable"))
-                    {
-                        heldObject = objectHit;
-                        Rigidbody rb = objectHit.GetComponent<Rigidbody>();
-                        rb.useGravity = false;
-                        rb.freezeRotation = true;
-                    }
+                if (objectHit.CompareTag("Grabbable"))
+                {
+                    heldObject = objectHit;
+                    Rigidbody rb = objectHit.GetComponent<Rigidbody>();
+                    rb.useGravity = false;
+                    rb.freezeRotation = true;
+                }
+                else if (objectHit.CompareTag("Guy"))
+                {
+                    objectHit.GetComponent<Customer>().PlaceOrder();
                 }
             }
         }

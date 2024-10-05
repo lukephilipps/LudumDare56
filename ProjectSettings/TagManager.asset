@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Fluid
   - Grabbable
+  - Guy
   layers:
   - Default
   - TransparentFX

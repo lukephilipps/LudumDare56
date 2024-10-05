@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33284400864220076}
   - component: {fileID: 23589022729442766}
   - component: {fileID: 64940156659793680}
+  - component: {fileID: 4008800700598461167}
   m_Layer: 6
   m_Name: PW_cheesecake_blueberry
   m_TagString: Grabbable
@@ -109,3 +110,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: eed7e310319bd46fe93f17de3399735e, type: 3}
+--- !u!114 &4008800700598461167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432254121047128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05337bd2d6d44b14eb7545dee4348cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 1
+  sprite: {fileID: 21300000, guid: f9914dbf14a73472d942a44b9bdc134d, type: 3}
+  obj: {fileID: 1432254121047128}
