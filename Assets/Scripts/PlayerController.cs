@@ -3,12 +3,17 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 5.0f;
-    public float sprintMultiplier = 1.45f;
+    public float moveSpeed = 3.0f;
+    public bool crouching;
     public bool sprinting;
+    [Range(0.0f, 1.0f)] public float crouchMultiplier = 0.35f;
+    [Range(1.0f, 2.0f)]public float sprintMultiplier = 1.45f;
+    public float crouchHeight = 1.0f;
 
-    private Transform cameraTransform;
+    private bool cameraLerping;
+    private float standingHeight;
     private float cameraRotation;
+    private Transform cameraTransform;
     private CharacterController characterController;
 
     [Header("Grabbing Objects")]
@@ -20,17 +25,25 @@ public class PlayerController : MonoBehaviour
     private Transform heldObject;
     private Vector3 holdPoint;
 
-    void Start()
+    private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         characterController = GetComponent<CharacterController>();
         cameraTransform = GetComponentInChildren<Camera>().transform;
+
+        standingHeight = cameraTransform.localPosition.y;
     }
 
-    void Update()
+    private void Update()
     {
+        HandleCrouching();
         Movement();
         CameraMovement();
+
+        if (cameraLerping)
+        {
+            LerpCamera();
+        }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -44,15 +57,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Movement()
+    private void Movement()
     {
         float xMovement = Input.GetAxis("Horizontal");
         float yMovement = Input.GetAxis("Vertical");
 
         Vector3 frameVelocity = Vector3.ClampMagnitude(transform.right * xMovement + transform.forward * yMovement, 1.0f) * moveSpeed;
 
-        // Check if sprinting
-        if (sprinting = Input.GetKey(KeyCode.LeftShift))
+        if (crouching)
+        {
+            frameVelocity *= crouchMultiplier;
+        }
+        else if (sprinting = Input.GetKey(KeyCode.LeftShift))
         {
             frameVelocity *= sprintMultiplier;
         }
@@ -61,7 +77,7 @@ public class PlayerController : MonoBehaviour
         characterController.Move(frameVelocity * Time.deltaTime);
     }
 
-    void CameraMovement()
+    private void CameraMovement()
     {
         float xMouse = Input.GetAxis("Mouse X");
         float yMouse = Input.GetAxis("Mouse Y");
@@ -74,7 +90,7 @@ public class PlayerController : MonoBehaviour
 
     private void Interact()
     {
-        // Drop object if holding one, otherwise try to grab a new object
+        // Drop object if holding one, otherwise interact as normal
         if (heldObject)
         {
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
@@ -101,6 +117,31 @@ public class PlayerController : MonoBehaviour
                 {
                     objectHit.GetComponent<Customer>().PlaceOrder();
                 }
+            }
+        }
+    }
+
+    private void HandleCrouching()
+    {
+        if (true /*check if player has hold or toggle crouch, rn just hold crouch*/)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                crouching = true;
+                cameraLerping = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                crouching = false;
+                cameraLerping = true;
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                crouching = !crouching;
+                cameraLerping = true;
             }
         }
     }
@@ -132,5 +173,19 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawRay(mainCam.transform.position, holdPoint - mainCam.transform.position);
         Gizmos.DrawSphere(holdPoint, 0.05f);
 
+    }
+
+    private void LerpCamera()
+    {
+        float targetHeight = crouching ? crouchHeight - 1.0f : standingHeight;
+        float newHeight = MathHelpers.Damp(cameraTransform.localPosition.y, targetHeight, 10.0f, Time.deltaTime);
+        
+        if (Mathf.Abs(targetHeight - newHeight) < 0.01f)
+        {
+            cameraLerping = false;
+            newHeight = targetHeight;
+        }
+
+        cameraTransform.localPosition = new Vector3(0.0f, newHeight, 0.0f);
     }
 }
