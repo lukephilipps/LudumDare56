@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public enum Satisfaction
 
 public enum OrderState
 {
+    WALKING,
     WAITING,
     ORDERED,
     DONE
@@ -21,21 +23,34 @@ public class Customer : MonoBehaviour
 {
     public Satisfaction currentSatisfaction;
     public OrderState currentState;
+    public AnimState animState;
 
     public Image emotionImage;
     public Image orderImage;
 
     private NavMeshAgent agent;
-
-    public Transform[] destination;
-
+    private Animator animator;
+    
     void Start()
     {
         currentSatisfaction = Satisfaction.HAPPY;
-        currentState = OrderState.WAITING;
+        currentState = OrderState.WALKING;
 
         agent = GetComponent<NavMeshAgent>();
-        agent.SetDestination(destination[0].position);
+        agent.SetDestination(GameManager.Singleton.GetDestination(Destination.COUNTER));
+        
+
+        animator = GetComponent<Animator>();
+        ChangeAnimation(AnimState.WALK);
+    }
+
+    void Update()
+    {
+        if (currentState == OrderState.WALKING && agent.remainingDistance < 0.001f)
+        {
+            ChangeAnimation(AnimState.IDLE);
+            currentState = OrderState.WAITING;
+        }
     }
     
     public void PlaceOrder()
@@ -43,8 +58,9 @@ public class Customer : MonoBehaviour
         if (currentState == OrderState.WAITING)
         {
             Debug.Log("Placing Order...");
+            ChangeAnimation(AnimState.WALK);
 
-            int order = Random.Range(0, GameManager.Singleton.items.Length);
+            int order = Random.Range(0, GameManager.Singleton.ItemsLen());
             
             orderImage.sprite = GameManager.Singleton.GetItemSprite(order);
             orderImage.color = new Color(255, 255, 255, 255);
@@ -53,7 +69,13 @@ public class Customer : MonoBehaviour
             emotionImage.color = new Color(255, 255, 255, 255);
 
             currentState = OrderState.ORDERED;
-            agent.SetDestination(destination[1].position);
+            agent.SetDestination(GameManager.Singleton.GetDestination(Destination.TABLE));
         }
+    }
+
+    private void ChangeAnimation(AnimState state)
+    {
+        animator.runtimeAnimatorController = GameManager.Singleton.GetAnimation(state);
+        animState = state;
     }
 }
