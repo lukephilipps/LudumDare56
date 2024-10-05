@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4832582097483732}
   - component: {fileID: 8469760893412704109}
-  - component: {fileID: 3180506507013149446}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PW_cup01
   m_TagString: Grabbable
   m_Icon: {fileID: 0}
@@ -62,27 +61,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!65 &3180506507013149446
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008724288380868}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.3, z: 0.3}
-  m_Center: {x: 0, y: 0.13, z: 0}
 --- !u!1 &1024679911826584
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,7 +72,8 @@ GameObject:
   - component: {fileID: 4823821681743212}
   - component: {fileID: 33213251382418664}
   - component: {fileID: 23273604049106000}
-  m_Layer: 0
+  - component: {fileID: 1903652827066068428}
+  m_Layer: 6
   m_Name: cup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,6 +148,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1903652827066068428
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024679911826584}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 89c2450bbaa1c476bbe11493cb92548f, type: 3}
 --- !u!1 &1789664444539380
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,7 +181,7 @@ GameObject:
   - component: {fileID: 4061018906571842}
   - component: {fileID: 33098697323912612}
   - component: {fileID: 23120205214320306}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: coffee
   m_TagString: Fluid
   m_Icon: {fileID: 0}
