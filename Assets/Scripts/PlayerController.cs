@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
 
     private Transform heldObject;
     private Vector3 holdPoint;
+    private Quaternion holdRotation;
 
     private void Start()
     {
@@ -112,6 +113,10 @@ public class PlayerController : MonoBehaviour
                     Rigidbody rb = objectHit.GetComponent<Rigidbody>();
                     rb.useGravity = false;
                     rb.freezeRotation = true;
+
+                    holdRotation = Quaternion.Inverse(transform.rotation) * objectHit.rotation;
+
+                    print(holdRotation.eulerAngles);
                 }
                 else if (objectHit.CompareTag("Guy"))
                 {
@@ -157,7 +162,22 @@ public class PlayerController : MonoBehaviour
         {
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
             rb.linearVelocity = Vector3.ClampMagnitude((holdPoint - heldObject.position) * heldObjectFloatSpeed, maxHeldObjectFloatSpeed);
+            rb.MoveRotation(transform.rotation * holdRotation);
         }
+    }
+
+    private void LerpCamera()
+    {
+        float targetHeight = crouching ? crouchHeight - 1.0f : standingHeight;
+        float newHeight = MathHelpers.Damp(cameraTransform.localPosition.y, targetHeight, 10.0f, Time.deltaTime);
+        
+        if (Mathf.Abs(targetHeight - newHeight) < 0.0025f)
+        {
+            cameraLerping = false;
+            newHeight = targetHeight;
+        }
+
+        cameraTransform.localPosition = new Vector3(0.0f, newHeight, 0.0f);
     }
 
     private void OnDrawGizmos()
@@ -173,19 +193,5 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawRay(mainCam.transform.position, holdPoint - mainCam.transform.position);
         Gizmos.DrawSphere(holdPoint, 0.05f);
 
-    }
-
-    private void LerpCamera()
-    {
-        float targetHeight = crouching ? crouchHeight - 1.0f : standingHeight;
-        float newHeight = MathHelpers.Damp(cameraTransform.localPosition.y, targetHeight, 10.0f, Time.deltaTime);
-        
-        if (Mathf.Abs(targetHeight - newHeight) < 0.01f)
-        {
-            cameraLerping = false;
-            newHeight = targetHeight;
-        }
-
-        cameraTransform.localPosition = new Vector3(0.0f, newHeight, 0.0f);
     }
 }
