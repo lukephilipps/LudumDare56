@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -79,6 +80,12 @@ public class DoorHingeAnimation : MonoBehaviour
     IEnumerator WaitToClose()
     {
         yield return new WaitForSeconds(doorTime);
+        StartDoorAnim();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("entering trigger");
         StartDoorAnim();
     }
 }
