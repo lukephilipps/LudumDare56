@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public float holdRange = 1.0f;
     public float heldObjectFloatSpeed = 15.0f;
     public float maxHeldObjectFloatSpeed = 20.0f;
+    public LayerMask hitLayers;
 
     private Transform heldObject;
     private Vector3 holdPoint;
@@ -94,6 +95,13 @@ public class PlayerController : MonoBehaviour
         // Drop object if holding one, otherwise interact as normal
         if (heldObject)
         {
+            Item item = heldObject.GetComponent<Item>();
+            if (item)
+            {
+                item.held = false;
+                item.Grabbed();
+            }
+
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
             rb.useGravity = true;
             rb.freezeRotation = false;
@@ -103,15 +111,23 @@ public class PlayerController : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, grabRange))
+            if (Physics.Raycast(ray, out hit, grabRange, hitLayers))
             {
                 Transform objectHit = hit.transform;
 
                 if (objectHit.CompareTag("Grabbable"))
                 {
+                    Item item = objectHit.GetComponent<Item>();
+                    if (item)
+                    {
+                        item.held = true;
+                        item.Grabbed();
+                    }
+
                     heldObject = objectHit;
                     Rigidbody rb = hit.rigidbody;
                     rb.useGravity = false;
+                    rb.constraints = RigidbodyConstraints.None;
                     rb.freezeRotation = true;
                     holdRotation = Quaternion.Inverse(transform.rotation) * objectHit.rotation;
                 }
@@ -121,7 +137,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (objectHit.CompareTag("FoodMachine"))
                 {
-                    print("buh");
+                    objectHit.GetComponent<IInteractable>().Interact();
                 }
             }
         }

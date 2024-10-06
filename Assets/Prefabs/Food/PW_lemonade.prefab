@@ -291,6 +291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4726716047031402}
   - component: {fileID: 290230383340197723}
+  - component: {fileID: 7206887704341659932}
   m_Layer: 6
   m_Name: PW_lemonade
   m_TagString: Grabbable
@@ -343,3 +344,17 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &7206887704341659932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915065632980748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05337bd2d6d44b14eb7545dee4348cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  held: 0

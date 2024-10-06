@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 30edd3dfc6a788640a94157878cbee19
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - physicsShape: {fileID: 8011868775247011672, guid: edd3904dc6dd9cd459a4dbd7c2812dbb, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

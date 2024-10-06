@@ -205,6 +205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4605549448786486}
   - component: {fileID: 3592027526045320013}
+  - component: {fileID: 2859544549221307219}
   m_Layer: 6
   m_Name: PW_cup02
   m_TagString: Grabbable
@@ -256,3 +257,17 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &2859544549221307219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388494189643026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05337bd2d6d44b14eb7545dee4348cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  held: 0

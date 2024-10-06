@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4231305011238820}
   - component: {fileID: 6637065137645436229}
   - component: {fileID: 7482857017735086075}
+  - component: {fileID: 8883800559017908678}
   m_Layer: 6
   m_Name: PW_espresso_cup
   m_TagString: Grabbable
@@ -77,6 +78,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 5
+  held: 0
+--- !u!114 &8883800559017908678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246674552413394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9094a1150f631614b9592044e2588dde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  done: 0
+  fillingUp: 0
+  cookie: {fileID: 4989691083754356}
+  plate: {fileID: 4084508370641082}
+  espresso: {fileID: 4465328097517166}
 --- !u!1 &1652678915735542
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,11 +109,11 @@ GameObject:
   - component: {fileID: 23990882516185042}
   m_Layer: 6
   m_Name: kahve
-  m_TagString: Fluid
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4465328097517166
 Transform:
   m_ObjectHideFlags: 0
@@ -104,7 +123,7 @@ Transform:
   m_GameObject: {fileID: 1652678915735542}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00062701997, y: 0.00020092523, z: 0.0009329703}
+  m_LocalPosition: {x: -0.00062701997, y: -0.0754, z: 0.0009329703}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -176,11 +195,11 @@ GameObject:
   - component: {fileID: 23937508796297168}
   m_Layer: 6
   m_Name: kurabiye
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4989691083754356
 Transform:
   m_ObjectHideFlags: 0
@@ -263,7 +282,7 @@ GameObject:
   - component: {fileID: 64991468958868048}
   m_Layer: 6
   m_Name: tabak
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -276,9 +295,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1717583032123942}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00030836771, y: 0.0050948537, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.0211, z: 0}
+  m_LocalScale: {x: 0.3636, y: 0.3636, z: 0.3636}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4231305011238820}
@@ -372,7 +391,7 @@ GameObject:
   - component: {fileID: 3114377264274285380}
   m_Layer: 6
   m_Name: fincan
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 9127155681990481298}
   - component: {fileID: 7979466494353958018}
   - component: {fileID: 4592239562179421406}
+  - component: {fileID: 5771935352645635309}
   m_Layer: 8
   m_Name: EspressoMachine
   m_TagString: FoodMachine
@@ -226,8 +227,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7, y: 0.8, z: 0.7}
-  m_Center: {x: 0, y: 0.4, z: 0}
+  m_Size: {x: 0.7, y: 0.4, z: 0.7}
+  m_Center: {x: 0, y: 0.64, z: 0}
 --- !u!54 &4592239562179421406
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -255,3 +256,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &5771935352645635309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9053015219315392427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30edd3dfc6a788640a94157878cbee19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  physicsShape: {fileID: 8011868775247011672, guid: edd3904dc6dd9cd459a4dbd7c2812dbb, type: 3}
+  cupHolderHitbox: {fileID: 1747499606329099953, guid: 485e66b7eb9a1d948b1871720e096827, type: 3}

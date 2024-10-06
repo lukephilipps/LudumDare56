@@ -183,6 +183,9 @@ MonoBehaviour:
   holdRange: 1
   heldObjectFloatSpeed: 15
   maxHeldObjectFloatSpeed: 20
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 511
 --- !u!1 &5394355280745107069
 GameObject:
   m_ObjectHideFlags: 0
