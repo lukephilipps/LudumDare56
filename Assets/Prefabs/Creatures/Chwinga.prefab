@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 8089522547157386693}
   - component: {fileID: 5208691754326952826}
   - component: {fileID: 507201390712696917}
-  - component: {fileID: 5199583650633923796}
+  - component: {fileID: 3428233769398615791}
   m_Layer: 0
   m_Name: Chwinga
   m_TagString: Guy
@@ -206,6 +206,7 @@ MonoBehaviour:
   animState: 0
   emotionImage: {fileID: 7626282544274326540}
   orderImage: {fileID: 1462305845199936075}
+  agent: {fileID: 0}
 --- !u!195 &507201390712696917
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -215,7 +216,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1152473613760263478}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.2
+  m_Radius: 0.1
   m_Speed: 1
   m_Acceleration: 8
   avoidancePriority: 50
@@ -224,11 +225,11 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 0.5
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!65 &5199583650633923796
+--- !u!65 &3428233769398615791
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -247,8 +248,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.27006832, y: 0.57498676, z: 0.2932224}
-  m_Center: {x: 0.011591029, y: 0.21250185, z: -0.028058227}
+  m_Size: {x: 0.25972366, y: 0.50284255, z: 0.2702639}
+  m_Center: {x: 0.0073657036, y: 0.25233907, z: -0.005959809}
 --- !u!1 &1272953210391150474
 GameObject:
   m_ObjectHideFlags: 0

@@ -88,22 +88,22 @@ public class GameManager : MonoBehaviour
 
     public void MoveLine()
     {
-        for (int i = 0; i < counter.Length - 2; i++)
+        for (int i = 0; i < counter.Length - 1; i++)
         {
             Destination curr = counter[i];
             Destination prev = counter[i + 1];
 
-            if (curr.taken == false && prev.taken == true)
+            if (!curr.taken && prev.taken)
             {
+                prev.customer.currentState = OrderState.WALKING;
                 prev.customer.ChangeAnimation(AnimState.WALK);
                 prev.customer.agent.SetDestination(curr.transform.position);
+                
                 curr.taken = true;
+                curr.customer = prev.customer;
+                
                 prev.taken = false;
-            }
-            else
-            {
-                Debug.Log("line empty at " + i + " customers");
-                return; // no one else in line
+                prev.customer = null;
             }
         }
     }

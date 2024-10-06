@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class DoorHingeAnimation : MonoBehaviour
@@ -7,8 +8,12 @@ public class DoorHingeAnimation : MonoBehaviour
     public Vector3 open;
     public Vector3 closed;
 
-    public bool isOpen;
-    public bool slerping;
+    [Header("How long the door stay open time:")]
+    [Range(0.0f, 10.0f)]
+    public float doorTime = 5f;
+
+    private bool isOpen;
+    private bool slerping;
 
     private float elapsedTime;
     private float closeSlerpTime;
@@ -52,7 +57,7 @@ public class DoorHingeAnimation : MonoBehaviour
             slerping = false;
             elapsedTime = 0f;
             
-            StartDoorAnim(); // start closing animation
+            StartCoroutine(WaitToClose());
         }
     }
 
@@ -69,6 +74,11 @@ public class DoorHingeAnimation : MonoBehaviour
             slerping = false;
             elapsedTime = 0f;
         }
+    }
 
+    IEnumerator WaitToClose()
+    {
+        yield return new WaitForSeconds(doorTime);
+        StartDoorAnim();
     }
 }

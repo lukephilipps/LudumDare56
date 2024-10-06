@@ -14,8 +14,9 @@ public enum Satisfaction
 public enum OrderState
 {
     WALKING,
-    WAITING,
+    WAIT_QUEUE,
     ORDERED,
+    WAIT_FOOD,
     DONE
 }
 
@@ -50,14 +51,22 @@ public class Customer : MonoBehaviour
         if (currentState == OrderState.WALKING && agent.remainingDistance < 0.001f)
         {
             ChangeAnimation(AnimState.IDLE);
-            currentState = OrderState.WAITING;
+            currentState = OrderState.WAIT_QUEUE;
         }
+
+        if (currentState == OrderState.ORDERED && agent.remainingDistance < 0.001f)
+        {
+            ChangeAnimation(AnimState.IDLE);
+            currentState = OrderState.WAIT_FOOD;
+        }
+        
     }
     
     public void PlaceOrder()
     {
-        if (currentState == OrderState.WAITING)
+        if (currentState == OrderState.WAIT_QUEUE)
         {
+            agent.SetDestination(GameManager.Singleton.SitAtTable());
             ChangeAnimation(AnimState.WALK);
 
             int order = Random.Range(0, GameManager.Singleton.ItemsLen());
@@ -69,7 +78,6 @@ public class Customer : MonoBehaviour
             emotionImage.color = new Color(255, 255, 255, 255);
 
             currentState = OrderState.ORDERED;
-            agent.SetDestination(GameManager.Singleton.SitAtTable());
         }
     }
 
