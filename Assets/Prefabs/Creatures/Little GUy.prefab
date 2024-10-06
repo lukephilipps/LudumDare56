@@ -884,6 +884,7 @@ GameObject:
   - component: {fileID: 5871445300229311077}
   - component: {fileID: 6253403116067287946}
   - component: {fileID: 538085660174878119}
+  - component: {fileID: -1215247175878373242}
   m_Layer: 0
   m_Name: Little GUy
   m_TagString: Guy
@@ -948,6 +949,7 @@ MonoBehaviour:
   animState: 0
   emotionImage: {fileID: 7458591125241911614}
   orderImage: {fileID: 205177396924617493}
+  orderID: 0
   agent: {fileID: 6253403116067287946}
 --- !u!195 &6253403116067287946
 NavMeshAgent:
@@ -992,6 +994,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.24567413, y: 0.5126749, z: 0.2356891}
   m_Center: {x: -0.00084400177, y: 0.24366254, z: -0.002689451}
+--- !u!54 &-1215247175878373242
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628967548331536952}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &7149976713682264470
 GameObject:
   m_ObjectHideFlags: 0

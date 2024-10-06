@@ -28,6 +28,7 @@ public class Customer : MonoBehaviour
 
     public Image emotionImage;
     public Image orderImage;
+    public int orderID;
 
     public NavMeshAgent agent;
     private Animator animator;
@@ -40,8 +41,6 @@ public class Customer : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.SetDestination(GameManager.Singleton.WaitInLine(this));
         
-        GameManager.Singleton.door.StartDoorAnim();
-
         animator = GetComponent<Animator>();
         ChangeAnimation(AnimState.WALK);
     }
@@ -67,17 +66,32 @@ public class Customer : MonoBehaviour
         if (currentState == OrderState.WAIT_QUEUE)
         {
             agent.SetDestination(GameManager.Singleton.SitAtTable());
+            Debug.Log(agent.destination);
             ChangeAnimation(AnimState.WALK);
 
-            int order = Random.Range(0, GameManager.Singleton.ItemsLen());
+            orderID = Random.Range(0, GameManager.Singleton.ItemsLen());
             
-            orderImage.sprite = GameManager.Singleton.GetItemSprite(order);
+            orderImage.sprite = GameManager.Singleton.GetItemSprite(orderID);
             orderImage.color = new Color(255, 255, 255, 255);
 
             emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
             emotionImage.color = new Color(255, 255, 255, 255);
 
             currentState = OrderState.ORDERED;
+        }
+    }
+
+    public void GetOrder()
+    {
+        if (currentState == OrderState.WAIT_FOOD)
+        {
+            orderImage.color = new Color(255, 255, 255, 0);
+            emotionImage.color = new Color(255, 255, 255, 0);
+
+            agent.SetDestination(GameManager.Singleton.ExitLocation());
+            ChangeAnimation(AnimState.WALK);
+
+            currentState = OrderState.DONE;
         }
     }
 

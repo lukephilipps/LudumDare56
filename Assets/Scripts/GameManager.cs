@@ -16,19 +16,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Sprite[] items;
     [SerializeField] private Sprite[] emotions;
     [SerializeField] private RuntimeAnimatorController[] animations;
-
-    public List<Customer> inLine;
-
+    
     public Destination[] counter;
     public Destination[] table;
+    [SerializeField] private Transform exit;
     
-    [HideInInspector] public DoorHingeAnimation door;
+    public DoorHingeAnimation door;
 
     private void Awake()
     {
         Singleton = this;
-        door = GetComponent<DoorHingeAnimation>();
-
     }
 
     public Sprite GetItemSprite(int id)
@@ -123,6 +120,11 @@ public class GameManager : MonoBehaviour
         }
         
         return Vector3.zero;
+    }
+
+    public Vector3 ExitLocation()
+    {
+        return exit.position;
     }
 }
 
