@@ -62,7 +62,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!1 &1652678915735542
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 4816383633672058}
   - component: {fileID: 33381909323533602}
   - component: {fileID: 23015144325006124}
-  - component: {fileID: 64243068370230450}
+  - component: {fileID: 3114377264274285380}
   m_Layer: 6
   m_Name: fincan
   m_TagString: Untagged
@@ -431,8 +431,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64243068370230450
-MeshCollider:
+--- !u!65 &3114377264274285380
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -449,7 +449,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 8cf7e78c936024f5188a4948d67d992e, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.13, y: 0.10004564, z: 0.10362569}
+  m_Center: {x: 0.007, y: 0.000000007450581, z: 0}

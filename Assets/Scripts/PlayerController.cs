@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
                 if (objectHit.CompareTag("Grabbable"))
                 {
                     heldObject = objectHit;
-                    Rigidbody rb = objectHit.GetComponent<Rigidbody>();
+                    Rigidbody rb = hit.rigidbody;
                     rb.useGravity = false;
                     rb.freezeRotation = true;
                     holdRotation = Quaternion.Inverse(transform.rotation) * objectHit.rotation;
@@ -118,6 +118,10 @@ public class PlayerController : MonoBehaviour
                 else if (objectHit.CompareTag("Guy"))
                 {
                     objectHit.GetComponent<Customer>().PlaceOrder();
+                }
+                else if (objectHit.CompareTag("FoodMachine"))
+                {
+                    print("buh");
                 }
             }
         }
