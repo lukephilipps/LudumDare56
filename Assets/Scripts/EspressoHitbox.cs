@@ -28,6 +28,12 @@ public class EspressoHitbox : MonoBehaviour
         Rigidbody rb = item.GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeAll;
         rb.freezeRotation = true;
+
+        if (item.id == 50)
+        {
+            item.GetComponent<EspressoCupAnimation>().PlaceCup();
+            
+        }
     }
 
     public void ReleaseItem()
