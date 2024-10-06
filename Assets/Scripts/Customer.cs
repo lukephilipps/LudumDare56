@@ -58,7 +58,6 @@ public class Customer : MonoBehaviour
     {
         if (currentState == OrderState.WAITING)
         {
-            Debug.Log("Placing Order...");
             ChangeAnimation(AnimState.WALK);
 
             int order = Random.Range(0, GameManager.Singleton.ItemsLen());
