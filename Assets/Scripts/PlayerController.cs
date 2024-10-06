@@ -180,8 +180,6 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Camera mainCam = Camera.main;
-        Ray ray;
-        ray = mainCam.ScreenPointToRay(Input.mousePosition);
         holdPoint = mainCam.transform.position + mainCam.transform.forward * holdRange;
 
         Gizmos.color = Color.yellow;
