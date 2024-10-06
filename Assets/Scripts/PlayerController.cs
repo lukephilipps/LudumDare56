@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public bool sprinting;
     [Range(0.0f, 1.0f)] public float crouchMultiplier = 0.35f;
     [Range(1.0f, 2.0f)]public float sprintMultiplier = 1.45f;
-    public float crouchHeight = 1.0f;
+    public float crouchHeight = 0.65f;
 
     private bool cameraLerping;
     private float standingHeight;
@@ -96,8 +96,8 @@ public class PlayerController : MonoBehaviour
         {
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
             rb.useGravity = true;
-            heldObject = null;
             rb.freezeRotation = false;
+            heldObject = null;
         }
         else
         {
