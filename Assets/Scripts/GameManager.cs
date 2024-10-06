@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public enum AnimState
 {
     IDLE,
     WALK
-}
-
-public enum Destination
-{
-    COUNTER,
-    TABLE
 }
 
 public class GameManager : MonoBehaviour
@@ -20,15 +15,20 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] private Sprite[] items;
     [SerializeField] private Sprite[] emotions;
-    [SerializeField] private Transform[] destinations;
     [SerializeField] private RuntimeAnimatorController[] animations;
 
-    public DoorHingeAnimation door;
+    public List<Customer> inLine;
+
+    public Destination[] counter;
+    public Destination[] table;
+    
+    [HideInInspector] public DoorHingeAnimation door;
 
     private void Awake()
     {
         Singleton = this;
         door = GetComponent<DoorHingeAnimation>();
+
     }
 
     public Sprite GetItemSprite(int id)
@@ -47,16 +47,12 @@ public class GameManager : MonoBehaviour
         {
             case Satisfaction.HAPPY:
                 return emotions[0];
-                break;
             case Satisfaction.NEUTRAL:
                 return emotions[1];
-                break;
             case Satisfaction.UNHAPPY:
                 return emotions[2];
-                break;
             case Satisfaction.ANGY:
                 return emotions[3];
-                break;
         }
 
         return null;
@@ -68,27 +64,72 @@ public class GameManager : MonoBehaviour
         {
             case AnimState.IDLE:
                 return animations[0];
-                break;
             case AnimState.WALK:
                 return animations[1];
-                break;
         }
 
         return null;
     }
-
-    public Vector3 GetDestination(Destination destination)
+    
+    public Vector3 WaitInLine(Customer c)
     {
-        switch (destination)
+        for (int i = 0; i < counter.Length; i++)
         {
-            case Destination.COUNTER:
-                return destinations[0].position;
-                break;
-            case Destination.TABLE:
-                return destinations[1].position;
-                break;
+            if (!counter[i].taken)
+            {
+                counter[i].taken = true;
+                counter[i].customer = c;
+                return counter[i].transform.position;
+            }
         }
         
         return Vector3.zero;
     }
+
+    public void MoveLine()
+    {
+        for (int i = 0; i < counter.Length - 2; i++)
+        {
+            Destination curr = counter[i];
+            Destination prev = counter[i + 1];
+
+            if (curr.taken == false && prev.taken == true)
+            {
+                prev.customer.ChangeAnimation(AnimState.WALK);
+                prev.customer.agent.SetDestination(curr.transform.position);
+                curr.taken = true;
+                prev.taken = false;
+            }
+            else
+            {
+                Debug.Log("line empty at " + i + " customers");
+                return; // no one else in line
+            }
+        }
+    }
+
+    public Vector3 SitAtTable()
+    {
+        counter[0].taken = false; // front of line is false
+        MoveLine();
+        
+        for (int i = 0; i < table.Length; i++)
+        {
+            if (!table[i].taken)
+            {
+                table[i].taken = true;
+                return table[i].transform.position;
+            }
+        }
+        
+        return Vector3.zero;
+    }
+}
+
+[System.Serializable]
+public class Destination
+{
+    public Transform transform;
+    public Customer customer;
+    public bool taken = false;
 }

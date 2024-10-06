@@ -28,7 +28,7 @@ public class Customer : MonoBehaviour
     public Image emotionImage;
     public Image orderImage;
 
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     private Animator animator;
     
     void Start()
@@ -37,7 +37,7 @@ public class Customer : MonoBehaviour
         currentState = OrderState.WALKING;
 
         agent = GetComponent<NavMeshAgent>();
-        agent.SetDestination(GameManager.Singleton.GetDestination(Destination.COUNTER));
+        agent.SetDestination(GameManager.Singleton.WaitInLine(this));
         
         GameManager.Singleton.door.StartDoorAnim();
 
@@ -69,11 +69,11 @@ public class Customer : MonoBehaviour
             emotionImage.color = new Color(255, 255, 255, 255);
 
             currentState = OrderState.ORDERED;
-            agent.SetDestination(GameManager.Singleton.GetDestination(Destination.TABLE));
+            agent.SetDestination(GameManager.Singleton.SitAtTable());
         }
     }
 
-    private void ChangeAnimation(AnimState state)
+    public void ChangeAnimation(AnimState state)
     {
         animator.runtimeAnimatorController = GameManager.Singleton.GetAnimation(state);
         animState = state;
