@@ -23,9 +23,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform[] destinations;
     [SerializeField] private RuntimeAnimatorController[] animations;
 
+    public DoorHingeAnimation door;
+
     private void Awake()
     {
         Singleton = this;
+        door = GetComponent<DoorHingeAnimation>();
     }
 
     public Sprite GetItemSprite(int id)

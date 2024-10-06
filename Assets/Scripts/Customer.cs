@@ -39,6 +39,7 @@ public class Customer : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.SetDestination(GameManager.Singleton.GetDestination(Destination.COUNTER));
         
+        GameManager.Singleton.door.StartDoorAnim();
 
         animator = GetComponent<Animator>();
         ChangeAnimation(AnimState.WALK);
