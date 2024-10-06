@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4532939970849458}
   - component: {fileID: 6703005933312850272}
+  - component: {fileID: 5032307239345047830}
   m_Layer: 6
   m_Name: PW_frenchtoas_cherry_tomato
   m_TagString: Grabbable
@@ -63,6 +64,19 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &5032307239345047830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000415426235750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05337bd2d6d44b14eb7545dee4348cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 10
 --- !u!1 &1109421544171522
 GameObject:
   m_ObjectHideFlags: 0

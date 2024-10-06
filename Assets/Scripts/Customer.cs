@@ -53,10 +53,15 @@ public class Customer : MonoBehaviour
             currentState = OrderState.WAIT_QUEUE;
         }
 
-        if (currentState == OrderState.ORDERED && agent.remainingDistance < 0.001f)
+        else if (currentState == OrderState.ORDERED && agent.remainingDistance < 0.001f)
         {
             ChangeAnimation(AnimState.IDLE);
             currentState = OrderState.WAIT_FOOD;
+        }
+        
+        else if (currentState == OrderState.DONE && agent.remainingDistance < 0.001f)
+        {
+            Destroy(gameObject);
         }
         
     }

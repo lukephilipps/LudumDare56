@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23678161130071684}
   - component: {fileID: 64979028713491550}
   - component: {fileID: 7496635592332717984}
+  - component: {fileID: -4257277168557861706}
   m_Layer: 6
   m_Name: PW_doughnut_pink
   m_TagString: Grabbable
@@ -137,3 +138,16 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &-4257277168557861706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080854471979460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05337bd2d6d44b14eb7545dee4348cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 7

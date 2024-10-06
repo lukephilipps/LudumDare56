@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23787655259520534}
   - component: {fileID: 64898002655162414}
   - component: {fileID: 5766939991288889655}
+  - component: {fileID: 3116116502426048231}
   m_Layer: 6
   m_Name: PW_cupcake_redvelvet
   m_TagString: Grabbable
@@ -137,3 +138,16 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &3116116502426048231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872547006494550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05337bd2d6d44b14eb7545dee4348cef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 15
