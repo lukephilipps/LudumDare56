@@ -3,6 +3,7 @@ using UnityEngine;
 public class EspressoHitbox : MonoBehaviour
 {
     public Item item;
+    public EspressoMachine machine;
 
     private void OnTriggerStay(Collider other)
     {
@@ -31,15 +32,27 @@ public class EspressoHitbox : MonoBehaviour
 
         if (item.id == 50)
         {
-            item.GetComponent<EspressoCupAnimation>().PlaceCup();
-            
+            EspressoCupAnimation espressoCupAnimation = item.GetComponent<EspressoCupAnimation>();
+            espressoCupAnimation.hitboxRef = this;
+            espressoCupAnimation.PlaceCup();
         }
     }
 
     public void ReleaseItem()
     {
+        if (item.id == 50)
+        {
+            item.GetComponent<EspressoCupAnimation>().fillingUp = false;
+        }
+
+        StopCoffeePour();
         item.transform.parent = null;
         item.onGrab -= ReleaseItem;
         item = null;
+    }
+
+    public void StopCoffeePour()
+    {
+        machine.coffeeEffect.gameObject.SetActive(false);
     }
 }
