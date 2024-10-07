@@ -304,8 +304,8 @@ MonoBehaviour:
   orderID: 0
   agent: {fileID: 0}
   idleAnim: {fileID: 9100000, guid: 893fc718244cf0646aa44adc5feec86a, type: 2}
-  happySound: {fileID: 0}
-  angySound: {fileID: 0}
+  happySound: {fileID: 8300000, guid: 4f798d2b5aa665f43ae2cb69d6afb3fc, type: 3}
+  angySound: {fileID: 8300000, guid: ce54e59778e20ed408f9aff9f9f171d1, type: 3}
 --- !u!195 &6766625872721929970
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -389,7 +389,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
