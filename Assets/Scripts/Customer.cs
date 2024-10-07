@@ -93,6 +93,19 @@ public class Customer : MonoBehaviour
         // Order a random item
         orderID = UnityEngine.Random.Range(0, GameManager.Singleton.ItemsLen());
 
+        if (UnityEngine.Random.Range(0.0f, 10.0f) <= 1.0f)
+        {
+            orderID = 5;
+        }
+        else if (UnityEngine.Random.Range(0.0f, 10.0f) <= 2.0f)
+        {
+            orderID = 13;
+        }
+        else if (UnityEngine.Random.Range(0.0f, 10.0f) <= 3.0f)
+        {
+            orderID = 16;
+        }
+
         // Set image settings
         orderImage.sprite = GameManager.Singleton.GetItemSprite(orderID);
         orderImage.color = new Color(255, 255, 255, 255);

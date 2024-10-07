@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
                                 playParticles = true;
                                 if (item.GetComponent<CoffeeCupAnimation>().Fill())
                                 {
-                                    item.id = 0;
+                                    item.id = 16;
                                 }
                             }
                             else if (item.id == 52 && pourerType == Pourer.Type.TEA) // Tea
@@ -235,12 +235,12 @@ public class PlayerController : MonoBehaviour
     {
         if (true /*check if player has hold or toggle crouch, rn just hold crouch*/)
         {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
+            if (Input.GetKeyDown(KeyCode.Z))
             {
                 crouching = true;
                 cameraLerping = true;
             }
-            else if (Input.GetKeyUp(KeyCode.LeftControl))
+            else if (Input.GetKeyUp(KeyCode.Z))
             {
                 crouching = false;
                 cameraLerping = true;
