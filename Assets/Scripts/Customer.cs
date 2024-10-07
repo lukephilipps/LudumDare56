@@ -40,10 +40,11 @@ public class Customer : MonoBehaviour
     public AudioClip angySound;
     private AudioSource audioSource;
 
-    public float emotionTimer;
+    private float emotionTimer;
     private bool standingInsteadOfSitting;
 
     private float waitingPosition;
+    private bool stormingOut;
     
     void Start()
     {
@@ -76,7 +77,8 @@ public class Customer : MonoBehaviour
     {
         if (currentState == OrderState.WAITING_IN_LINE &&
             GameManager.Singleton.counter[0].customer &&
-            GameManager.Singleton.counter[0].customer == this)
+            GameManager.Singleton.counter[0].customer == this &&
+            !stormingOut)
         {
             TakeOrder();
         }
@@ -118,20 +120,21 @@ public class Customer : MonoBehaviour
         }
 
         // Wait for audio clip to play
-        yield return new WaitForSeconds(Mathf.Min(3.2f));
+        yield return new WaitForSeconds(3.2f);
 
         ChangeAnimation(AnimState.WALK);
         currentState = OrderState.WALKING_TO_TABLE;
         agent.SetDestination(destination.Item1);
 
         // Give time for customer to go down stairs before advancing line
-        yield return new WaitForSeconds(Mathf.Min(1.8f));
+        yield return new WaitForSeconds(1.8f);
 
         GameManager.Singleton.MoveLine();
     }
 
     public void ReceiveOrder()
     {
+        GameManager.Singleton.AddSatisfaction(currentSatisfaction);
         StartCoroutine(TakeOrderAndLeave());
     }
 
@@ -146,16 +149,16 @@ public class Customer : MonoBehaviour
             case Satisfaction.HAPPY:
                 ChangeAnimation(AnimState.DANCING);
                 PlaySoundEffect(happySound);
-                yield return new WaitForSeconds(2.4f);
+                yield return new WaitForSeconds(3.2f);
                 break;
             case Satisfaction.NEUTRAL:
                 ChangeAnimation(AnimState.HAPPY);
                 PlaySoundEffect(happySound);
-                yield return new WaitForSeconds(1.8f);
+                yield return new WaitForSeconds(2.1f);
                 break;
             default:
                 PlaySoundEffect(angySound);
-                yield return new WaitForSeconds(2.0f);
+                yield return new WaitForSeconds(1.8f);
                 break;
         }
 
@@ -170,7 +173,7 @@ public class Customer : MonoBehaviour
     {
         PlaySoundEffect(angySound);
         ChangeAnimation(AnimState.ANGY);
-        yield return new WaitForSeconds(Mathf.Min(3.2f));
+        yield return new WaitForSeconds(3.2f);
 
         ChangeAnimation(AnimState.WALK);
         agent.SetDestination(GameManager.Singleton.ExitLocation());
@@ -179,7 +182,7 @@ public class Customer : MonoBehaviour
         if (GameManager.Singleton.counter[0].customer &&
             GameManager.Singleton.counter[0].customer == this)
         {
-            yield return new WaitForSeconds(Mathf.Min(1.2f));
+            yield return new WaitForSeconds(1.2f);
             GameManager.Singleton.MoveLine();
         }
 
@@ -281,6 +284,8 @@ public class Customer : MonoBehaviour
             currentSatisfaction = Satisfaction.ANGY;
             emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.ANGY);
 
+            GameManager.Singleton.AddSatisfaction(currentSatisfaction);
+            stormingOut = true;
             StopAllCoroutines();
             StartCoroutine(StormOut());
         }

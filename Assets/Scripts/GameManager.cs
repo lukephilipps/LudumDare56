@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.Timeline;
+using UnityEngine.UI;
 using Random = System.Random;
 
 public enum AnimState
@@ -29,8 +27,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform exit;
     public Transform overflowArea;
 
+    [Header("UI References")]
+    public Image[] emojis;
+
     private Random random;
     private float randXMin, randXMax, randYMin, randYMax;
+    private int dangerCount;
     
     private void Awake()
     {
@@ -177,6 +179,67 @@ public class GameManager : MonoBehaviour
     public Vector3 ExitLocation()
     {
         return exit.position;
+    }
+
+    public void AddSatisfaction(Satisfaction level)
+    {
+        Sprite sprite;
+
+        switch (level)
+        {
+            case Satisfaction.HAPPY:
+                sprite = emotions[0];
+                break;
+            case Satisfaction.NEUTRAL:
+                sprite = emotions[1];
+                break;
+            case Satisfaction.UNHAPPY:
+                sprite = emotions[2];
+                ++dangerCount;
+                break;
+            default:
+                sprite = emotions[3];
+                ++dangerCount;
+                break;
+        }
+
+        if (emojis[4].color == Color.black)
+        {
+            emojis[4].sprite = sprite;
+            emojis[4].color = Color.white;
+        }
+        else if (emojis[3].color == Color.black)
+        {
+            emojis[3].sprite = sprite;
+            emojis[3].color = Color.white;
+        }
+        else if (emojis[2].color == Color.black)
+        {
+            emojis[2].sprite = sprite;
+            emojis[2].color = Color.white;
+        }
+        else if (emojis[1].color == Color.black)
+        {
+            emojis[1].sprite = sprite;
+            emojis[1].color = Color.white;
+        }
+        else if (emojis[0].color == Color.black)
+        {
+            emojis[0].sprite = sprite;
+            emojis[0].color = Color.white;
+        }
+        else
+        {
+            if (emojis[4].sprite == emotions[2] || emojis[4].sprite == emotions[3]) --dangerCount;
+
+            emojis[4].sprite = emojis[3].sprite;
+            emojis[3].sprite = emojis[2].sprite;
+            emojis[2].sprite = emojis[1].sprite;
+            emojis[1].sprite = emojis[0].sprite;
+            emojis[0].sprite = sprite;
+        }
+
+        MusicManager.Singleton.ActivateTrack(dangerCount);
     }
 }
 
