@@ -23,7 +23,7 @@ public class CreatureSpawner : MonoBehaviour
         {
             SpawnCreature();
             elapsedGameTime = 0f;
-            if (spawnFrequency > 3f) spawnFrequency -= 0.05f;
+            if (spawnFrequency > 5f) spawnFrequency -= 0.05f;
         }
     }
 

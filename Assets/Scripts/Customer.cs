@@ -35,6 +35,8 @@ public class Customer : MonoBehaviour
     public NavMeshAgent agent;
     private Animator animator;
 
+    [Header("Animations")] public RuntimeAnimatorController idleAnim;
+
     [Header("Sound Effects")] 
     public AudioClip happySound;
     public AudioClip angySound;
@@ -186,12 +188,20 @@ public class Customer : MonoBehaviour
             GameManager.Singleton.MoveLine();
         }
 
+        if (!standingInsteadOfSitting) GameManager.Singleton.FreeWaitingPosition(this);
         currentState = OrderState.LEAVING;
     }
 
     public void ChangeAnimation(AnimState state)
     {
-        animator.runtimeAnimatorController = GameManager.Singleton.GetAnimation(state);
+        if (state == AnimState.IDLE)
+        {
+            animator.runtimeAnimatorController = idleAnim;
+        }
+        else
+        {
+            animator.runtimeAnimatorController = GameManager.Singleton.GetAnimation(state);
+        }
         animState = state;
     }
 
@@ -264,17 +274,17 @@ public class Customer : MonoBehaviour
 
         emotionTimer += Time.deltaTime * emotionMultiplier;
 
-        if (emotionTimer < 10f)
+        if (emotionTimer < 15f)
         {
             currentSatisfaction = Satisfaction.HAPPY;
             emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
         }
-        else if (emotionTimer < 20f)
+        else if (emotionTimer < 30f)
         {
             currentSatisfaction = Satisfaction.NEUTRAL;
             emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
         }
-        else if (emotionTimer < 30f)
+        else if (emotionTimer < 45f)
         {
             currentSatisfaction = Satisfaction.UNHAPPY;
             emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.UNHAPPY);

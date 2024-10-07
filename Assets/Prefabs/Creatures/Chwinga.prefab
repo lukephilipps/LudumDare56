@@ -901,6 +901,7 @@ MonoBehaviour:
   orderImage: {fileID: 1553854930368600687}
   orderID: 0
   agent: {fileID: 0}
+  idleAnim: {fileID: 9100000, guid: 7fab23da36c7b9c44b72f5474ed4d665, type: 2}
   happySound: {fileID: 8300000, guid: 08ec0a3568dc01744bec75dc4c22619a, type: 3}
   angySound: {fileID: 8300000, guid: 8a46f92103f749d47a1f29548f1beb2f, type: 3}
 --- !u!195 &5725430003589865504

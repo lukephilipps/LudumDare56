@@ -16,6 +16,7 @@ public enum AnimState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Singleton;
+    public bool gameOverState = false;
     
     [SerializeField] private Sprite[] items;
     [SerializeField] private Sprite[] emotions;
@@ -46,6 +47,14 @@ public class GameManager : MonoBehaviour
         randXMax = center.x + boundaries.x;
         randYMax = center.z + boundaries.z;
         randYMin = center.z - boundaries.z;
+    }
+
+    private void Update()
+    {
+        if (dangerCount >= 5)
+        {
+            gameOverState = true;
+        }
     }
 
     public Vector3 RandomOverflowLocation()

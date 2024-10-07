@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!PauseMenu.paused)
+        if (!PauseMenu.paused && !GameManager.Singleton.gameOverState)
         {
             HandleCrouching();
             Movement();
