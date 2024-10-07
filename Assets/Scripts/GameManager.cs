@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -36,6 +37,16 @@ public class GameManager : MonoBehaviour
     private float randXMin, randXMax, randYMin, randYMax;
     public int dangerCount;
 
+    public int lockedScores;
+    public float score;
+    public Text uiText;
+    public Text uiEndText;
+
+    public bool locked1;
+    public bool locked2;
+    public bool locked3;
+    public bool locked4;
+
     public PlayableDirector pd;
     
     private void Awake()
@@ -51,6 +62,14 @@ public class GameManager : MonoBehaviour
         randYMax = center.z + boundaries.z;
         randYMin = center.z - boundaries.z;
     }
+
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Keypad7)) AddSatisfaction(Satisfaction.HAPPY);
+    //    if (Input.GetKeyDown(KeyCode.Keypad8)) AddSatisfaction(Satisfaction.NEUTRAL);
+    //    if (Input.GetKeyDown(KeyCode.Keypad9)) AddSatisfaction(Satisfaction.UNHAPPY);
+    //    if (Input.GetKeyDown(KeyCode.Keypad0)) AddSatisfaction(Satisfaction.ANGY);
+    //}
 
     public Vector3 RandomOverflowLocation()
     {
@@ -192,9 +211,11 @@ public class GameManager : MonoBehaviour
         switch (level)
         {
             case Satisfaction.HAPPY:
+                score += 0.07f;
                 sprite = emotions[0];
                 break;
             case Satisfaction.NEUTRAL:
+                score += 0.03f;
                 sprite = emotions[1];
                 break;
             case Satisfaction.UNHAPPY:
@@ -204,6 +225,7 @@ public class GameManager : MonoBehaviour
             default:
                 sprite = emotions[3];
                 ++dangerCount;
+                ++lockedScores;
                 break;
         }
 
@@ -234,16 +256,29 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (emojis[4].sprite == emotions[2] || emojis[4].sprite == emotions[3]) --dangerCount;
+            if (lockedScores < 5 && emojis[4 - lockedScores].sprite == emotions[2]) --dangerCount;
+
+            if (emojis[4].sprite == emotions[3]) locked4 = true;
+            if (emojis[3].sprite == emotions[3] && locked4) locked3 = true;
+            if (emojis[2].sprite == emotions[3] && locked3) locked2 = true;
+            if (emojis[1].sprite == emotions[3] && locked2) locked1 = true;
 
             emojis[4].sprite = emojis[3].sprite;
             emojis[3].sprite = emojis[2].sprite;
             emojis[2].sprite = emojis[1].sprite;
             emojis[1].sprite = emojis[0].sprite;
             emojis[0].sprite = sprite;
+
+            if (locked4) emojis[4].sprite = emotions[3];
+            if (locked3) emojis[3].sprite = emotions[3];
+            if (locked2) emojis[2].sprite = emotions[3];
+            if (locked1) emojis[1].sprite = emotions[3];
         }
 
         MusicManager.Singleton.ActivateTrack(dangerCount);
+
+        uiText.text = String.Format("{0:C}", score);
+        uiEndText.text = "Score: " + String.Format("{0:C}", score);
 
         if (dangerCount >= 5)
         {
