@@ -136,8 +136,11 @@ public class Customer : MonoBehaviour
 
     public void ReceiveOrder()
     {
-        GameManager.Singleton.AddSatisfaction(currentSatisfaction);
-        StartCoroutine(TakeOrderAndLeave());
+        if (!stormingOut)
+        {
+            GameManager.Singleton.AddSatisfaction(currentSatisfaction);
+            StartCoroutine(TakeOrderAndLeave());
+        }
     }
 
     public IEnumerator TakeOrderAndLeave()
@@ -220,6 +223,7 @@ public class Customer : MonoBehaviour
         switch (currentState)
         {
             case OrderState.WALKING_UP_LINE:
+                if (GameManager.Singleton.counter[0].customer && GameManager.Singleton.counter[0].customer == this) transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
                 ChangeAnimation(AnimState.IDLE);
                 currentState = OrderState.WAITING_IN_LINE;
                 break;
@@ -293,6 +297,9 @@ public class Customer : MonoBehaviour
         {
             currentSatisfaction = Satisfaction.ANGY;
             emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.ANGY);
+
+            orderImage.color = new Color(255, 255, 255, 0);
+            emotionImage.rectTransform.localPosition = new Vector3(0.0f, 0.22f, 0.0f);
 
             GameManager.Singleton.AddSatisfaction(currentSatisfaction);
             stormingOut = true;
