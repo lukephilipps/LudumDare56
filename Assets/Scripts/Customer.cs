@@ -1,5 +1,5 @@
+using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -14,11 +14,12 @@ public enum Satisfaction
 
 public enum OrderState
 {
-    WALKING,
-    WAIT_QUEUE,
-    ORDERED,
-    WAIT_FOOD,
-    DONE
+    WALKING_UP_LINE,
+    WAITING_IN_LINE,
+    ORDERING,
+    WALKING_TO_TABLE,
+    WAITING_FOR_FOOD,
+    LEAVING
 }
 
 public class Customer : MonoBehaviour
@@ -39,12 +40,15 @@ public class Customer : MonoBehaviour
     public AudioClip angySound;
     private AudioSource audioSource;
 
-    private float emotionTimer;
+    public float emotionTimer;
+    private bool standingInsteadOfSitting;
+
+    private float waitingPosition;
     
     void Start()
     {
         currentSatisfaction = Satisfaction.HAPPY;
-        currentState = OrderState.WALKING;
+        currentState = OrderState.WALKING_UP_LINE;
 
         agent = GetComponent<NavMeshAgent>();
         agent.SetDestination(GameManager.Singleton.WaitInLine(this));
@@ -59,136 +63,127 @@ public class Customer : MonoBehaviour
 
     void Update()
     {
-        if (currentState == OrderState.WAIT_FOOD)
-        {
-            emotionTimer += Time.deltaTime;
+        DrainSatisfaction();
 
-            if (emotionTimer < 10f)
-            {
-                currentSatisfaction = Satisfaction.HAPPY;
-                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
-            }
-            else if ( (emotionTimer >= 10f && emotionTimer < 20f) && currentSatisfaction == Satisfaction.HAPPY)
-            {
-                currentSatisfaction = Satisfaction.NEUTRAL;
-                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
-            }
-            else if ( (emotionTimer >= 20f && emotionTimer < 30f) && currentSatisfaction == Satisfaction.NEUTRAL)
-            {
-                currentSatisfaction = Satisfaction.UNHAPPY;
-                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.UNHAPPY);
-            }
-            else if (emotionTimer >= 30f && currentSatisfaction == Satisfaction.UNHAPPY)
-            {
-                currentSatisfaction = Satisfaction.ANGY;
-                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.ANGY);
-
-                StartCoroutine(GetOrder());
-            }
-        }
-        
-        if (currentState == OrderState.WALKING && agent.remainingDistance < 0.001f)
+        if (agent.remainingDistance < 0.001f)
         {
-            ChangeAnimation(AnimState.IDLE);
-            currentState = OrderState.WAIT_QUEUE;
+            HandleEndOfPath();
         }
-        else if (currentState == OrderState.ORDERED && agent.remainingDistance < 0.001f)
-        {
-            if (currentSatisfaction == Satisfaction.HAPPY) ChangeAnimation(AnimState.SIT);
-            else if (currentSatisfaction == Satisfaction.NEUTRAL) ChangeAnimation(AnimState.IDLE);
-            currentState = OrderState.WAIT_FOOD;
-        }
-        else if (currentState == OrderState.DONE && agent.remainingDistance < 0.001f)
-        {
-            Destroy(gameObject);
-        }
-        
     }
     
-    public IEnumerator PlaceOrder()
+    // Used to place orders
+    public void Interact()
     {
-        if (currentState == OrderState.WAIT_QUEUE)
+        if (currentState == OrderState.WAITING_IN_LINE &&
+            GameManager.Singleton.counter[0].customer &&
+            GameManager.Singleton.counter[0].customer == this)
         {
-            orderID = Random.Range(0, GameManager.Singleton.ItemsLen());
-
-            orderImage.sprite = GameManager.Singleton.GetItemSprite(orderID);
-            orderImage.color = new Color(255, 255, 255, 255);
-            
-            Vector3 movePos = GameManager.Singleton.SitAtTable();
-
-            if (movePos == Vector3.zero) // no more seats
-            {
-                ChangeAnimation(AnimState.IDLE);
-                currentSatisfaction = Satisfaction.NEUTRAL;
-                
-                Vector2 randLocation = GameManager.Singleton.randomOverflowLocation();
-
-                movePos = new Vector3(randLocation.x, transform.position.y, randLocation.y);
-
-                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
-                emotionImage.color = new Color(255, 255, 255, 255);
-                
-                if (angySound != null)
-                {
-                    audioSource.clip = angySound;
-                    audioSource.Play();
-                    yield return new WaitForSeconds(angySound.length);
-                }
-            }
-            else // seats available
-            {
-                ChangeAnimation(AnimState.HAPPY);
-                currentSatisfaction = Satisfaction.HAPPY;
-
-                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
-                emotionImage.color = new Color(255, 255, 255, 255);
-            
-                if (happySound != null)
-                {
-                    audioSource.clip = happySound;
-                    audioSource.Play();
-                    yield return new WaitForSeconds(happySound.length);
-                }
-            }
-
-            GameManager.Singleton.MoveLine();
-            agent.SetDestination(movePos);
-            ChangeAnimation(AnimState.WALK);
-            currentState = OrderState.ORDERED;
+            TakeOrder();
         }
     }
 
-    public IEnumerator GetOrder()
+    private void TakeOrder()
     {
-        if (currentState == OrderState.WAIT_FOOD)
+        // Order a random item
+        orderID = UnityEngine.Random.Range(0, GameManager.Singleton.ItemsLen());
+
+        // Set image settings
+        orderImage.sprite = GameManager.Singleton.GetItemSprite(orderID);
+        orderImage.color = new Color(255, 255, 255, 255);
+        emotionImage.rectTransform.localPosition = new Vector3(0.33f, 0.22f, 0);
+
+        // Add a bonus to the timer based on how early you took order
+        emotionTimer -= 5.0f - (int)currentSatisfaction;
+
+        currentState = OrderState.ORDERING;
+
+        StartCoroutine(OrderAndMoveAnimation());
+    }
+
+    private IEnumerator OrderAndMoveAnimation()
+    {
+        Tuple<Vector3, bool> destination = GameManager.Singleton.GetWaitingPosition(this);
+        standingInsteadOfSitting = !destination.Item2;
+
+        if (destination.Item2)
         {
-            orderImage.color = new Color(255, 255, 255, 0);
-            emotionImage.color = new Color(255, 255, 255, 0);
-
-            agent.SetDestination(GameManager.Singleton.ExitLocation());
-            ChangeAnimation(AnimState.WALK);
-
-            if (currentSatisfaction == Satisfaction.ANGY)
-            {
-                if (angySound != null)
-                {
-                    audioSource.clip = angySound;
-                    audioSource.Play();
-                    yield return new WaitForSeconds(angySound.length);
-                }
-            }
-            else
-            {
-                if (happySound != null)
-                {
-                    audioSource.clip = happySound;
-                    audioSource.Play();
-                    yield return new WaitForSeconds(happySound.length);
-                }
-            }
-
-            currentState = OrderState.DONE;
+            PlaySoundEffect(happySound);
+            ChangeAnimation(AnimState.HAPPY);
         }
+        else
+        {
+            PlaySoundEffect(angySound);
+            ChangeAnimation(AnimState.ANGY);
+            emotionTimer += 10.0f;
+        }
+
+        // Wait for audio clip to play
+        yield return new WaitForSeconds(Mathf.Min(3.2f));
+
+        ChangeAnimation(AnimState.WALK);
+        currentState = OrderState.WALKING_TO_TABLE;
+        agent.SetDestination(destination.Item1);
+
+        // Give time for customer to go down stairs before advancing line
+        yield return new WaitForSeconds(Mathf.Min(1.8f));
+
+        GameManager.Singleton.MoveLine();
+    }
+
+    public void ReceiveOrder()
+    {
+        StartCoroutine(TakeOrderAndLeave());
+    }
+
+    public IEnumerator TakeOrderAndLeave()
+    {
+        orderImage.color = new Color(255, 255, 255, 0);
+        emotionImage.rectTransform.localPosition = new Vector3(0.0f, 0.22f, 0.0f);
+
+        // Celebrate or pout
+        switch (currentSatisfaction)
+        {
+            case Satisfaction.HAPPY:
+                ChangeAnimation(AnimState.DANCING);
+                PlaySoundEffect(happySound);
+                yield return new WaitForSeconds(2.4f);
+                break;
+            case Satisfaction.NEUTRAL:
+                ChangeAnimation(AnimState.HAPPY);
+                PlaySoundEffect(happySound);
+                yield return new WaitForSeconds(1.8f);
+                break;
+            default:
+                PlaySoundEffect(angySound);
+                yield return new WaitForSeconds(2.0f);
+                break;
+        }
+
+        // Leave
+        if (!standingInsteadOfSitting) GameManager.Singleton.FreeWaitingPosition(this);
+        ChangeAnimation(AnimState.WALK);
+        currentState = OrderState.LEAVING;
+        agent.SetDestination(GameManager.Singleton.ExitLocation());
+    }
+
+    private IEnumerator StormOut()
+    {
+        PlaySoundEffect(angySound);
+        ChangeAnimation(AnimState.ANGY);
+        yield return new WaitForSeconds(Mathf.Min(3.2f));
+
+        ChangeAnimation(AnimState.WALK);
+        agent.SetDestination(GameManager.Singleton.ExitLocation());
+
+        // Advance line if in the front of the line
+        if (GameManager.Singleton.counter[0].customer &&
+            GameManager.Singleton.counter[0].customer == this)
+        {
+            yield return new WaitForSeconds(Mathf.Min(1.2f));
+            GameManager.Singleton.MoveLine();
+        }
+
+        currentState = OrderState.LEAVING;
     }
 
     public void ChangeAnimation(AnimState state)
@@ -197,10 +192,97 @@ public class Customer : MonoBehaviour
         animState = state;
     }
 
-    IEnumerator PlaySoundEffect(AudioClip clip)
+    private void PlaySoundEffect(AudioClip clip)
     {
-        audioSource.clip = clip;
-        audioSource.Play();
-        yield return new WaitForSeconds(clip.length);
+        if (clip)
+        {
+            audioSource.pitch = UnityEngine.Random.Range(0.96f, 1.04f);
+            audioSource.clip = clip;
+            audioSource.Play();
+        }
+    }
+
+    private void HandleEndOfPath()
+    {
+        switch (currentState)
+        {
+            case OrderState.WALKING_UP_LINE:
+                ChangeAnimation(AnimState.IDLE);
+                currentState = OrderState.WAITING_IN_LINE;
+                break;
+            case OrderState.WAITING_IN_LINE:
+
+                break;
+            case OrderState.ORDERING:
+
+                break;
+            case OrderState.WALKING_TO_TABLE:
+                if (!standingInsteadOfSitting)
+                {
+                    waitingPosition = transform.position.y;
+                    if (transform.position.z > -4.0f)
+                    {
+                        transform.LookAt(new Vector3(-4.92912483f, transform.position.y, -2.46898365f));
+                    }
+                    else
+                    {
+                        transform.LookAt(new Vector3(-5.26622009f, -0.978960156f, -6.1971302f));
+                    }
+                    ChangeAnimation(AnimState.SIT);
+                }
+                else ChangeAnimation(AnimState.IDLE);
+                currentState = OrderState.WAITING_FOR_FOOD;
+                break;
+            case OrderState.WAITING_FOR_FOOD:
+                if (!standingInsteadOfSitting)
+                {
+                    transform.position = new Vector3(transform.position.x, waitingPosition + 0.0922936f, transform.position.z);
+                }
+                break;
+            case OrderState.LEAVING:
+                Destroy(gameObject);
+                break;
+        }
+    }
+
+    private void DrainSatisfaction()
+    {
+        float emotionMultiplier = 1.0f;
+
+        switch (currentState)
+        {
+            case OrderState.WALKING_UP_LINE:
+            case OrderState.ORDERING:
+            case OrderState.WALKING_TO_TABLE:
+            case OrderState.LEAVING:
+                emotionMultiplier = 0.0f;
+                break;
+        }
+
+        emotionTimer += Time.deltaTime * emotionMultiplier;
+
+        if (emotionTimer < 10f)
+        {
+            currentSatisfaction = Satisfaction.HAPPY;
+            emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
+        }
+        else if (emotionTimer < 20f)
+        {
+            currentSatisfaction = Satisfaction.NEUTRAL;
+            emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
+        }
+        else if (emotionTimer < 30f)
+        {
+            currentSatisfaction = Satisfaction.UNHAPPY;
+            emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.UNHAPPY);
+        }
+        else if (currentSatisfaction == Satisfaction.UNHAPPY)
+        {
+            currentSatisfaction = Satisfaction.ANGY;
+            emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.ANGY);
+
+            StopAllCoroutines();
+            StartCoroutine(StormOut());
+        }
     }
 }

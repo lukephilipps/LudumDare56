@@ -85,7 +85,6 @@ public class DoorHingeAnimation : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("entering trigger");
         StartDoorAnim();
     }
 }

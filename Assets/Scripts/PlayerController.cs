@@ -202,8 +202,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (objectHit.CompareTag("Guy"))
                 {
-                    Customer customer = objectHit.GetComponent<Customer>();
-                    StartCoroutine(customer.PlaceOrder());
+                    objectHit.GetComponent<Customer>().Interact();
                 }
                 else if (objectHit.CompareTag("FoodMachine"))
                 {

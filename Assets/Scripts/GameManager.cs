@@ -11,7 +11,8 @@ public enum AnimState
     WALK,
     SIT,
     ANGY,
-    HAPPY
+    HAPPY,
+    DANCING
 }
 
 public class GameManager : MonoBehaviour
@@ -31,7 +32,6 @@ public class GameManager : MonoBehaviour
     private Random random;
     private float randXMin, randXMax, randYMin, randYMax;
     
-    public DoorHingeAnimation door;
     private void Awake()
     {
         Singleton = this;
@@ -46,11 +46,11 @@ public class GameManager : MonoBehaviour
         randYMin = center.z - boundaries.z;
     }
 
-    public Vector2 randomOverflowLocation()
+    public Vector3 RandomOverflowLocation()
     {
         float x = (float)(randXMin + random.NextDouble() * Math.Abs(randXMax - randXMin));
         float y = (float)(randYMin + random.NextDouble() * Math.Abs(randYMax - randYMin));
-        return new Vector2(x, y);
+        return new Vector3(x, -1.0f, y);
     }
 
     public Sprite GetItemSprite(int id)
@@ -99,6 +99,8 @@ public class GameManager : MonoBehaviour
                 return animations[3];
             case AnimState.HAPPY:
                 return animations[4];
+            case AnimState.DANCING:
+                return animations[5];
         }
 
         return null;
@@ -130,7 +132,7 @@ public class GameManager : MonoBehaviour
 
             if (!curr.taken && prev.taken)
             {
-                prev.customer.currentState = OrderState.WALKING;
+                prev.customer.currentState = OrderState.WALKING_UP_LINE;
                 prev.customer.ChangeAnimation(AnimState.WALK);
                 prev.customer.agent.SetDestination(curr.transform.position);
                 
@@ -143,21 +145,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Vector3 SitAtTable()
+    // Returns a Tuple with the position and if it is at a table
+    public Tuple<Vector3, bool> GetWaitingPosition(Customer customer)
     {
-        if (!table[table.Length - 1].taken) // there are empty chairs
+        for (int i = 0; i < table.Length; i++)
         {
-            for (int i = 0; i < table.Length; i++)
+            if (!table[i].taken) // returns first empty chair
             {
-                if (!table[i].taken) // returns first empty chair
-                {
-                    table[i].taken = true;
-                    return table[i].transform.position;
-                }
+                table[i].customer = customer;
+                table[i].taken = true;
+                return new Tuple<Vector3, bool>(table[i].transform.position + table[i].transform.forward * 0.065f, true);
             }
         }
 
-        return Vector3.zero; // goes to volume square
+        return new Tuple<Vector3, bool>(RandomOverflowLocation(), false); // goes to volume square
+    }
+
+    public void FreeWaitingPosition(Customer customer)
+    {
+        for (int i = 0; i < table.Length; i++)
+        {
+            if (table[i].customer == customer)
+            {
+                table[i].taken = false;
+                table[i].customer = null;
+                return;
+            }
+        }
     }
 
     public Vector3 ExitLocation()
