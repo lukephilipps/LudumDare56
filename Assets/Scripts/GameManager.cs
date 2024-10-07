@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.Timeline;
+using Random = System.Random;
 
 public enum AnimState
 {
     IDLE,
-    WALK
+    WALK,
+    SIT,
+    ANGY,
+    HAPPY
 }
 
 public class GameManager : MonoBehaviour
@@ -17,15 +22,35 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Sprite[] emotions;
     [SerializeField] private RuntimeAnimatorController[] animations;
     
+    [Header("Creature Destinations")]
     public Destination[] counter;
     public Destination[] table;
     [SerializeField] private Transform exit;
+    public Transform overflowArea;
+
+    private Random random;
+    private float randXMin, randXMax, randYMin, randYMax;
     
     public DoorHingeAnimation door;
-
     private void Awake()
     {
         Singleton = this;
+
+        random = new Random();
+        
+        Vector3 boundaries = overflowArea.GetComponent<BoxCollider>().size * 0.5f;
+        Vector3 center = overflowArea.position;
+        randXMin = center.x - boundaries.x;
+        randXMax = center.x + boundaries.x;
+        randYMax = center.z + boundaries.z;
+        randYMin = center.z - boundaries.z;
+    }
+
+    public Vector2 randomOverflowLocation()
+    {
+        float x = (float)(randXMin + random.NextDouble() * Math.Abs(randXMax - randXMin));
+        float y = (float)(randYMin + random.NextDouble() * Math.Abs(randYMax - randYMin));
+        return new Vector2(x, y);
     }
 
     public Sprite GetItemSprite(int id)
@@ -36,6 +61,11 @@ public class GameManager : MonoBehaviour
     public int ItemsLen()
     {
         return items.Length;
+    }
+
+    public bool LastSpotTaken()
+    {
+        return counter[counter.Length - 1].taken;
     }
 
     public Sprite GetEmotionSprite(Satisfaction emotion)
@@ -63,6 +93,12 @@ public class GameManager : MonoBehaviour
                 return animations[0];
             case AnimState.WALK:
                 return animations[1];
+            case AnimState.SIT:
+                return animations[2];
+            case AnimState.ANGY:
+                return animations[3];
+            case AnimState.HAPPY:
+                return animations[4];
         }
 
         return null;
@@ -85,6 +121,8 @@ public class GameManager : MonoBehaviour
 
     public void MoveLine()
     {
+        counter[0].taken = false; // front of line is false
+
         for (int i = 0; i < counter.Length - 1; i++)
         {
             Destination curr = counter[i];
@@ -107,19 +145,19 @@ public class GameManager : MonoBehaviour
 
     public Vector3 SitAtTable()
     {
-        counter[0].taken = false; // front of line is false
-        MoveLine();
-        
-        for (int i = 0; i < table.Length; i++)
+        if (!table[table.Length - 1].taken) // there are empty chairs
         {
-            if (!table[i].taken)
+            for (int i = 0; i < table.Length; i++)
             {
-                table[i].taken = true;
-                return table[i].transform.position;
+                if (!table[i].taken) // returns first empty chair
+                {
+                    table[i].taken = true;
+                    return table[i].transform.position;
+                }
             }
         }
-        
-        return Vector3.zero;
+
+        return Vector3.zero; // goes to volume square
     }
 
     public Vector3 ExitLocation()

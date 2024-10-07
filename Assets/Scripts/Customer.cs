@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -32,6 +33,13 @@ public class Customer : MonoBehaviour
 
     public NavMeshAgent agent;
     private Animator animator;
+
+    [Header("Sound Effects")] 
+    public AudioClip happySound;
+    public AudioClip angySound;
+    private AudioSource audioSource;
+
+    private float emotionTimer;
     
     void Start()
     {
@@ -43,10 +51,42 @@ public class Customer : MonoBehaviour
         
         animator = GetComponent<Animator>();
         ChangeAnimation(AnimState.WALK);
+
+        audioSource = GetComponent<AudioSource>();
+
+        emotionTimer = 0f;
     }
 
     void Update()
     {
+        if (currentState == OrderState.WAIT_FOOD)
+        {
+            emotionTimer += Time.deltaTime;
+
+            if (emotionTimer < 10f)
+            {
+                currentSatisfaction = Satisfaction.HAPPY;
+                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
+            }
+            else if ( (emotionTimer >= 10f && emotionTimer < 20f) && currentSatisfaction == Satisfaction.HAPPY)
+            {
+                currentSatisfaction = Satisfaction.NEUTRAL;
+                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
+            }
+            else if ( (emotionTimer >= 20f && emotionTimer < 30f) && currentSatisfaction == Satisfaction.NEUTRAL)
+            {
+                currentSatisfaction = Satisfaction.UNHAPPY;
+                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.UNHAPPY);
+            }
+            else if (emotionTimer >= 30f && currentSatisfaction == Satisfaction.UNHAPPY)
+            {
+                currentSatisfaction = Satisfaction.ANGY;
+                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.ANGY);
+
+                StartCoroutine(GetOrder());
+            }
+        }
+        
         if (currentState == OrderState.WALKING && agent.remainingDistance < 0.001f)
         {
             ChangeAnimation(AnimState.IDLE);
@@ -55,7 +95,8 @@ public class Customer : MonoBehaviour
 
         else if (currentState == OrderState.ORDERED && agent.remainingDistance < 0.001f)
         {
-            ChangeAnimation(AnimState.IDLE);
+            if(currentSatisfaction == Satisfaction.HAPPY) ChangeAnimation(AnimState.SIT);
+            else if(currentSatisfaction == Satisfaction.NEUTRAL) ChangeAnimation(AnimState.IDLE);
             currentState = OrderState.WAIT_FOOD;
         }
         
@@ -66,27 +107,61 @@ public class Customer : MonoBehaviour
         
     }
     
-    public void PlaceOrder()
+    public IEnumerator PlaceOrder()
     {
         if (currentState == OrderState.WAIT_QUEUE)
         {
-            agent.SetDestination(GameManager.Singleton.SitAtTable());
-            Debug.Log(agent.destination);
-            ChangeAnimation(AnimState.WALK);
-
             orderID = Random.Range(0, GameManager.Singleton.ItemsLen());
-            
+
             orderImage.sprite = GameManager.Singleton.GetItemSprite(orderID);
             orderImage.color = new Color(255, 255, 255, 255);
+            
+            Vector3 movePos = GameManager.Singleton.SitAtTable();
 
-            emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
-            emotionImage.color = new Color(255, 255, 255, 255);
+            if (movePos == Vector3.zero) // no more seats
+            {
+                ChangeAnimation(AnimState.IDLE);
+                currentSatisfaction = Satisfaction.NEUTRAL;
+                
+                Vector2 randLocation = GameManager.Singleton.randomOverflowLocation();
 
+                movePos = new Vector3(randLocation.x, transform.position.y, randLocation.y);
+                Debug.Log(movePos);
+
+                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
+                emotionImage.color = new Color(255, 255, 255, 255);
+                
+                if (angySound != null)
+                {
+                    audioSource.clip = angySound;
+                    audioSource.Play();
+                    yield return new WaitForSeconds(angySound.length);
+                }
+            }
+            else // seats available
+            {
+                ChangeAnimation(AnimState.HAPPY);
+                currentSatisfaction = Satisfaction.HAPPY;
+
+                emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.HAPPY);
+                emotionImage.color = new Color(255, 255, 255, 255);
+            
+                if (happySound != null)
+                {
+                    audioSource.clip = happySound;
+                    audioSource.Play();
+                    yield return new WaitForSeconds(happySound.length);
+                }
+            }
+
+            GameManager.Singleton.MoveLine();
+            agent.SetDestination(movePos);
+            ChangeAnimation(AnimState.WALK);
             currentState = OrderState.ORDERED;
         }
     }
 
-    public void GetOrder()
+    public IEnumerator GetOrder()
     {
         if (currentState == OrderState.WAIT_FOOD)
         {
@@ -96,6 +171,25 @@ public class Customer : MonoBehaviour
             agent.SetDestination(GameManager.Singleton.ExitLocation());
             ChangeAnimation(AnimState.WALK);
 
+            if (currentSatisfaction == Satisfaction.ANGY)
+            {
+                if (angySound != null)
+                {
+                    audioSource.clip = angySound;
+                    audioSource.Play();
+                    yield return new WaitForSeconds(angySound.length);
+                }
+            }
+            else
+            {
+                if (happySound != null)
+                {
+                    audioSource.clip = happySound;
+                    audioSource.Play();
+                    yield return new WaitForSeconds(happySound.length);
+                }
+            }
+
             currentState = OrderState.DONE;
         }
     }
@@ -104,5 +198,12 @@ public class Customer : MonoBehaviour
     {
         animator.runtimeAnimatorController = GameManager.Singleton.GetAnimation(state);
         animState = state;
+    }
+
+    IEnumerator PlaySoundEffect(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.Play();
+        yield return new WaitForSeconds(clip.length);
     }
 }

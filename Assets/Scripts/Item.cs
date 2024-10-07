@@ -20,7 +20,7 @@ public class Item : MonoBehaviour
             Customer customer = other.gameObject.GetComponent<Customer>();
             if (id == customer.orderID)
             {
-                customer.GetOrder();
+                StartCoroutine(customer.GetOrder());
                 Destroy(gameObject);
             }
         }
