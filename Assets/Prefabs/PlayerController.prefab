@@ -179,13 +179,14 @@ MonoBehaviour:
   crouchMultiplier: 0.35
   sprintMultiplier: 1.45
   crouchHeight: 0.65
-  grabRange: 2
-  holdRange: 1
+  grabRange: 1.2
+  holdRange: 0.8
   heldObjectFloatSpeed: 15
   maxHeldObjectFloatSpeed: 20
   hitLayers:
     serializedVersion: 2
     m_Bits: 511
+  holdingPourer: 0
 --- !u!1 &5394355280745107069
 GameObject:
   m_ObjectHideFlags: 0

@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
             Pourer pourer = heldObject.GetComponentInParent<Pourer>();
             if (pourer)
             {
-                holdRange = holdRange * 2.0f;
+                holdRange = holdRange / 0.6f;
                 heldObjectFloatSpeed = heldObjectFloatSpeed / 1.5f;
                 holdingPourer = false;
                 heldObject.GetComponent<Pourer>().pourParticles.Stop();
@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
                     Pourer pourer = objectHit.GetComponentInParent<Pourer>();
                     if (pourer)
                     {
-                        holdRange = holdRange * 0.5f;
+                        holdRange = holdRange * 0.6f;
                         heldObjectFloatSpeed = heldObjectFloatSpeed * 1.5f;
                         holdingPourer = true;
                         pourerType = pourer.type;
@@ -197,7 +197,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (objectHit.CompareTag("Guy"))
                 {
-                    objectHit.GetComponent<Customer>().PlaceOrder();
+                    Customer customer = objectHit.GetComponent<Customer>();
+                    StartCoroutine(customer.PlaceOrder());
                 }
                 else if (objectHit.CompareTag("FoodMachine"))
                 {

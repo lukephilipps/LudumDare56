@@ -92,14 +92,12 @@ public class Customer : MonoBehaviour
             ChangeAnimation(AnimState.IDLE);
             currentState = OrderState.WAIT_QUEUE;
         }
-
         else if (currentState == OrderState.ORDERED && agent.remainingDistance < 0.001f)
         {
-            if(currentSatisfaction == Satisfaction.HAPPY) ChangeAnimation(AnimState.SIT);
-            else if(currentSatisfaction == Satisfaction.NEUTRAL) ChangeAnimation(AnimState.IDLE);
+            if (currentSatisfaction == Satisfaction.HAPPY) ChangeAnimation(AnimState.SIT);
+            else if (currentSatisfaction == Satisfaction.NEUTRAL) ChangeAnimation(AnimState.IDLE);
             currentState = OrderState.WAIT_FOOD;
         }
-        
         else if (currentState == OrderState.DONE && agent.remainingDistance < 0.001f)
         {
             Destroy(gameObject);
@@ -126,7 +124,6 @@ public class Customer : MonoBehaviour
                 Vector2 randLocation = GameManager.Singleton.randomOverflowLocation();
 
                 movePos = new Vector3(randLocation.x, transform.position.y, randLocation.y);
-                Debug.Log(movePos);
 
                 emotionImage.sprite = GameManager.Singleton.GetEmotionSprite(Satisfaction.NEUTRAL);
                 emotionImage.color = new Color(255, 255, 255, 255);
