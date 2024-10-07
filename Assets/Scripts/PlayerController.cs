@@ -29,6 +29,11 @@ public class PlayerController : MonoBehaviour
     private Vector3 holdPoint;
     private Quaternion holdRotation;
 
+    public bool rotatingToBoss;
+    Quaternion startRotation;
+    float rotateTimer;
+    public Transform bossTransform;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -40,12 +45,20 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (rotatingToBoss)
+        {
+            Camera.main.transform.LookAt(bossTransform);
+            Quaternion bossRotation = Camera.main.transform.rotation;
+
+            rotateTimer += Time.deltaTime;
+            Camera.main.transform.rotation = Quaternion.Slerp(startRotation, bossRotation, rotateTimer / 1.0f);
+        }
+
         if (!PauseMenu.paused && !GameManager.Singleton.gameOverState)
         {
             HandleCrouching();
             Movement();
             CameraMovement();
-
 
             if (cameraLerping)
             {
@@ -109,6 +122,12 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void LookAtBoss()
+    {
+        startRotation = Camera.main.transform.rotation;
+        rotatingToBoss = true;
     }
 
     private void Movement()

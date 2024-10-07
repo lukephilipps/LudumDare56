@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 using Random = System.Random;
 
@@ -33,7 +34,9 @@ public class GameManager : MonoBehaviour
 
     private Random random;
     private float randXMin, randXMax, randYMin, randYMax;
-    private int dangerCount;
+    public int dangerCount;
+
+    public PlayableDirector pd;
     
     private void Awake()
     {
@@ -47,14 +50,6 @@ public class GameManager : MonoBehaviour
         randXMax = center.x + boundaries.x;
         randYMax = center.z + boundaries.z;
         randYMin = center.z - boundaries.z;
-    }
-
-    private void Update()
-    {
-        if (dangerCount >= 5)
-        {
-            gameOverState = true;
-        }
     }
 
     public Vector3 RandomOverflowLocation()
@@ -249,6 +244,12 @@ public class GameManager : MonoBehaviour
         }
 
         MusicManager.Singleton.ActivateTrack(dangerCount);
+
+        if (dangerCount >= 5)
+        {
+            gameOverState = true;
+            pd.Play();
+        }
     }
 }
 

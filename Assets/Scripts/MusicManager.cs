@@ -25,12 +25,12 @@ public class MusicManager : MonoBehaviour
         if (lerpingVolumes)
         {
             ostLoops[previousTrack].volume = Mathf.Lerp(ostLoops[previousTrack].volume, 0.0f, lerpSpeed * Time.deltaTime);
-            ostLoops[currentTrack].volume = Mathf.Lerp(ostLoops[currentTrack].volume, 1.0f, lerpSpeed * Time.deltaTime);
+            ostLoops[currentTrack].volume = Mathf.Lerp(ostLoops[currentTrack].volume, 0.08f, lerpSpeed * Time.deltaTime);
 
-            if (ostLoops[currentTrack].volume > 0.98f)
+            if (ostLoops[currentTrack].volume > 0.0795f)
             {
                 ostLoops[previousTrack].volume = 0.0f;
-                ostLoops[currentTrack].volume = 1.0f;
+                ostLoops[currentTrack].volume = 0.08f;
                 lerpingVolumes = false;
             }
         }
@@ -45,7 +45,7 @@ public class MusicManager : MonoBehaviour
             song.volume = 0.0f;
 
         lerpingVolumes = true;
-        ostLoops[currentTrack].volume = 1.0f;
+        ostLoops[currentTrack].volume = 0.08f;
         previousTrack = currentTrack;
         currentTrack = trackNum;
     }

@@ -11,15 +11,7 @@ public class GameOverMenu : MonoBehaviour
         menu.SetActive(false);
     }
 
-    private void Update()
-    {
-        if (GameManager.Singleton.gameOverState)
-        {
-            GameOver();
-        }
-    }
-
-    private void GameOver()
+    public void GameOver()
     {
         Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
