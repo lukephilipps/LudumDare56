@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class DoorHingeAnimation : MonoBehaviour
@@ -13,10 +14,13 @@ public class DoorHingeAnimation : MonoBehaviour
     [Range(0.0f, 10.0f)]
     public float doorTime = 5f;
 
+    bool moving;
+    bool canClose;
     private bool isOpen;
     private bool slerping;
 
     private float elapsedTime;
+    private float elapsedTimeClose;
     private float closeSlerpTime;
     private float openSlerpTime;
     
@@ -24,7 +28,7 @@ public class DoorHingeAnimation : MonoBehaviour
     {
         closeSlerpTime = 1f;
         openSlerpTime = 0.2f;
-        elapsedTime = 0f;
+        elapsedTime = 0;
         
         isOpen = false;
         slerping = false;
@@ -32,12 +36,7 @@ public class DoorHingeAnimation : MonoBehaviour
 
     void Update()
     {
-        if (slerping)
-        {
-            if (isOpen) CloseDoor();
-            else OpenDoor();
-        }
-        
+        if (moving) SimDoor();
     }
 
     public void StartDoorAnim()
@@ -80,11 +79,38 @@ public class DoorHingeAnimation : MonoBehaviour
     IEnumerator WaitToClose()
     {
         yield return new WaitForSeconds(doorTime);
-        StartDoorAnim();
+        elapsedTimeClose = 0.0f;
+        canClose = true;
+    }
+
+    void SimDoor()
+    {
+        if (!canClose)
+        {
+            elapsedTime += Time.deltaTime;
+            doorTransform.rotation = Quaternion.Slerp(Quaternion.Euler(closed), Quaternion.Euler(open), elapsedTime / openSlerpTime);
+        }
+        else
+        {
+            elapsedTimeClose += Time.deltaTime;
+            doorTransform.rotation = Quaternion.Slerp(Quaternion.Euler(open), Quaternion.Euler(closed), elapsedTimeClose / closeSlerpTime);
+
+            if (elapsedTimeClose > closeSlerpTime)
+            {
+                doorTransform.rotation = Quaternion.Euler(closed);
+                moving = false;
+                elapsedTime = 0.0f;
+                elapsedTimeClose = 0.0f;
+            }
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        StartDoorAnim();
+        moving = true;
+        canClose = false;
+        StopAllCoroutines();
+        StartCoroutine(WaitToClose());
     }
 }
