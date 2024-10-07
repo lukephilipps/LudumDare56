@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask hitLayers;
     public bool holdingPourer;
 
+    private Pourer.Type pourerType;
     private Transform heldObject;
     private Vector3 holdPoint;
     private Quaternion holdRotation;
@@ -53,9 +54,55 @@ public class PlayerController : MonoBehaviour
             Interact();
         }
 
+        // Check if pouring
         if (heldObject && holdingPourer)
         {
-            heldObject.GetComponent<Rigidbody>().MoveRotation(transform.rotation * cameraTransform.localRotation * Quaternion.Euler(0.0f, 90.0f, 0.0f));
+            bool playParticles = false;
+            Quaternion endRotation = transform.rotation * cameraTransform.localRotation * Quaternion.Euler(0.0f, 90.0f, 0.0f);
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, grabRange, hitLayers))
+            {
+                Transform objectHit = hit.transform;
+
+                if (objectHit.CompareTag("Grabbable"))
+                {
+                    Item item = objectHit.GetComponent<Item>();
+                    if (item)
+                    {
+                        if (item.id == 51 && pourerType == Pourer.Type.COFFEE) // Coffee
+                        {
+                            endRotation *= Quaternion.Euler(0.0f, 0.0f, 25.0f);
+                            playParticles = true;
+                            if (item.GetComponent<CoffeeCupAnimation>().Fill())
+                            {
+                                item.id = 0;
+                            }
+                        }
+                        else if (item.id == 52 && pourerType == Pourer.Type.TEA) // Tea
+                        {
+                            endRotation *= Quaternion.Euler(0.0f, 0.0f, 25.0f);
+                            playParticles = true;
+                            if (item.GetComponent<CoffeeCupAnimation>().Fill())
+                            {
+                                item.id = 13;
+                            }
+                        }
+                    }
+                }
+            }
+
+            heldObject.GetComponent<Rigidbody>().MoveRotation(endRotation);
+
+            ParticleSystem particleSystem = heldObject.GetComponent<Pourer>().pourParticles;
+            if (playParticles && !particleSystem.isPlaying)
+            {
+                particleSystem.Play();
+            }
+            else if (!playParticles)
+            {
+                particleSystem.Stop();
+            }
         }
     }
 
@@ -107,6 +154,7 @@ public class PlayerController : MonoBehaviour
                 holdRange = holdRange * 2.0f;
                 heldObjectFloatSpeed = heldObjectFloatSpeed / 1.5f;
                 holdingPourer = false;
+                heldObject.GetComponent<Pourer>().pourParticles.Stop();
             }
 
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
@@ -137,6 +185,7 @@ public class PlayerController : MonoBehaviour
                         holdRange = holdRange * 0.5f;
                         heldObjectFloatSpeed = heldObjectFloatSpeed * 1.5f;
                         holdingPourer = true;
+                        pourerType = pourer.type;
                     }
 
                     heldObject = objectHit;
@@ -198,11 +247,7 @@ public class PlayerController : MonoBehaviour
         {
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
             rb.linearVelocity = Vector3.ClampMagnitude((holdPoint - heldObject.position) * heldObjectFloatSpeed, maxHeldObjectFloatSpeed);
-            if (holdingPourer)
-            {
-                rb.MoveRotation(transform.rotation * cameraTransform.localRotation * Quaternion.Euler(0.0f, 90.0f, 0.0f));
-            }
-            else
+            if (!holdingPourer)
             {
                 rb.MoveRotation(transform.rotation * holdRotation);
             }
