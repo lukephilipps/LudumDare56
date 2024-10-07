@@ -158,7 +158,6 @@ MonoBehaviour:
   agent: {fileID: 0}
   happySound: {fileID: 8300000, guid: e7cf3f4b0d073d549b99ceaa2696794c, type: 3}
   angySound: {fileID: 8300000, guid: 1449cde30aa6ea749b9c7e08ef229925, type: 3}
-  emotionTimer: 0
 --- !u!195 &6886459452441363988
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -168,7 +167,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1315040678730028831}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.15
+  m_Radius: 0.12
   m_Speed: 1
   m_Acceleration: 8
   avoidancePriority: 50
