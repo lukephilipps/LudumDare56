@@ -40,68 +40,73 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        HandleCrouching();
-        Movement();
-        CameraMovement();
-
-        if (cameraLerping)
+        if (!PauseMenu.paused)
         {
-            LerpCamera();
-        }
+            HandleCrouching();
+            Movement();
+            CameraMovement();
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Interact();
-        }
 
-        // Check if pouring
-        if (heldObject && holdingPourer)
-        {
-            bool playParticles = false;
-            Quaternion endRotation = transform.rotation * cameraTransform.localRotation * Quaternion.Euler(0.0f, 90.0f, 0.0f);
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, grabRange, hitLayers))
+            if (cameraLerping)
             {
-                Transform objectHit = hit.transform;
+                LerpCamera();
+            }
 
-                if (objectHit.CompareTag("Grabbable"))
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Interact();
+            }
+
+            // Check if pouring
+            if (heldObject && holdingPourer)
+            {
+                bool playParticles = false;
+                Quaternion endRotation = transform.rotation * cameraTransform.localRotation *
+                                         Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit, grabRange, hitLayers))
                 {
-                    Item item = objectHit.GetComponent<Item>();
-                    if (item)
+                    Transform objectHit = hit.transform;
+
+                    if (objectHit.CompareTag("Grabbable"))
                     {
-                        if (item.id == 51 && pourerType == Pourer.Type.COFFEE) // Coffee
+                        Item item = objectHit.GetComponent<Item>();
+                        if (item)
                         {
-                            endRotation *= Quaternion.Euler(0.0f, 0.0f, 25.0f);
-                            playParticles = true;
-                            if (item.GetComponent<CoffeeCupAnimation>().Fill())
+                            if (item.id == 51 && pourerType == Pourer.Type.COFFEE) // Coffee
                             {
-                                item.id = 0;
+                                endRotation *= Quaternion.Euler(0.0f, 0.0f, 25.0f);
+                                playParticles = true;
+                                if (item.GetComponent<CoffeeCupAnimation>().Fill())
+                                {
+                                    item.id = 0;
+                                }
                             }
-                        }
-                        else if (item.id == 52 && pourerType == Pourer.Type.TEA) // Tea
-                        {
-                            endRotation *= Quaternion.Euler(0.0f, 0.0f, 25.0f);
-                            playParticles = true;
-                            if (item.GetComponent<CoffeeCupAnimation>().Fill())
+                            else if (item.id == 52 && pourerType == Pourer.Type.TEA) // Tea
                             {
-                                item.id = 13;
+                                endRotation *= Quaternion.Euler(0.0f, 0.0f, 25.0f);
+                                playParticles = true;
+                                if (item.GetComponent<CoffeeCupAnimation>().Fill())
+                                {
+                                    item.id = 13;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            heldObject.GetComponent<Rigidbody>().MoveRotation(endRotation);
+                heldObject.GetComponent<Rigidbody>().MoveRotation(endRotation);
 
-            ParticleSystem particleSystem = heldObject.GetComponent<Pourer>().pourParticles;
-            if (playParticles && !particleSystem.isPlaying)
-            {
-                particleSystem.Play();
-            }
-            else if (!playParticles)
-            {
-                particleSystem.Stop();
+                ParticleSystem particleSystem = heldObject.GetComponent<Pourer>().pourParticles;
+                if (playParticles && !particleSystem.isPlaying)
+                {
+                    particleSystem.Play();
+                }
+                else if (!playParticles)
+                {
+                    particleSystem.Stop();
+                }
             }
         }
     }

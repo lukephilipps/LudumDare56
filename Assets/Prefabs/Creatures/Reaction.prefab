@@ -277,8 +277,8 @@ MonoBehaviour:
   orderImage: {fileID: 509566195711237710}
   orderID: 0
   agent: {fileID: 0}
-  happySound: {fileID: 0}
-  angySound: {fileID: 0}
+  happySound: {fileID: 8300000, guid: 5406286f6e914ac4d85d32693bc200c8, type: 3}
+  angySound: {fileID: 8300000, guid: 23705b4adee8ac0479fffe3160383230, type: 3}
 --- !u!195 &6520264867665536355
 NavMeshAgent:
   m_ObjectHideFlags: 0
