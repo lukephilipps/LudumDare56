@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 23726988355097250}
   m_Layer: 6
   m_Name: coffee
-  m_TagString: Fluid
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 64359346113296918}
   m_Layer: 6
   m_Name: plate
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 64594303947455114}
   m_Layer: 6
   m_Name: cup
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

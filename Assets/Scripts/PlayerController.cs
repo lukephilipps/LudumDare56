@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public float heldObjectFloatSpeed = 15.0f;
     public float maxHeldObjectFloatSpeed = 20.0f;
     public LayerMask hitLayers;
+    public bool holdingPourer;
 
     private Transform heldObject;
     private Vector3 holdPoint;
@@ -52,10 +53,9 @@ public class PlayerController : MonoBehaviour
             Interact();
         }
 
-        if (Input.GetKeyDown("r"))
+        if (heldObject && holdingPourer)
         {
-            if (Application.targetFrameRate == 30) Application.targetFrameRate = -1;
-            else Application.targetFrameRate = 30;
+            heldObject.GetComponent<Rigidbody>().MoveRotation(transform.rotation * cameraTransform.localRotation * Quaternion.Euler(0.0f, 90.0f, 0.0f));
         }
     }
 
@@ -99,7 +99,14 @@ public class PlayerController : MonoBehaviour
             if (item)
             {
                 item.held = false;
-                item.Grabbed();
+            }
+
+            Pourer pourer = heldObject.GetComponentInParent<Pourer>();
+            if (pourer)
+            {
+                holdRange = holdRange * 2.0f;
+                heldObjectFloatSpeed = heldObjectFloatSpeed / 1.5f;
+                holdingPourer = false;
             }
 
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
@@ -122,6 +129,14 @@ public class PlayerController : MonoBehaviour
                     {
                         item.held = true;
                         item.Grabbed();
+                    }
+
+                    Pourer pourer = objectHit.GetComponentInParent<Pourer>();
+                    if (pourer)
+                    {
+                        holdRange = holdRange * 0.5f;
+                        heldObjectFloatSpeed = heldObjectFloatSpeed * 1.5f;
+                        holdingPourer = true;
                     }
 
                     heldObject = objectHit;
@@ -173,13 +188,24 @@ public class PlayerController : MonoBehaviour
         // Adjust the point to lerp held objects to
         Transform cameraTransform = Camera.main.transform;
         holdPoint = cameraTransform.position + cameraTransform.forward * holdRange;
+        if (holdingPourer)
+        {
+            holdPoint += cameraTransform.up * -0.5f + cameraTransform.right * 0.15f;
+        }
 
         // Move the held object to the hold point
         if (heldObject)
         {
             Rigidbody rb = heldObject.GetComponent<Rigidbody>();
             rb.linearVelocity = Vector3.ClampMagnitude((holdPoint - heldObject.position) * heldObjectFloatSpeed, maxHeldObjectFloatSpeed);
-            rb.MoveRotation(transform.rotation * holdRotation);
+            if (holdingPourer)
+            {
+                rb.MoveRotation(transform.rotation * cameraTransform.localRotation * Quaternion.Euler(0.0f, 90.0f, 0.0f));
+            }
+            else
+            {
+                rb.MoveRotation(transform.rotation * holdRotation);
+            }
         }
     }
 

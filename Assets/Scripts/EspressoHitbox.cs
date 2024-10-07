@@ -7,11 +7,11 @@ public class EspressoHitbox : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!item)
+        if (!item && other.tag == "Grabbable")
         {
             Item item = other.gameObject.GetComponentInParent<Item>();
 
-            if (!item.held)
+            if (item && !item.held)
             {
                 TakeItem(item);
             }

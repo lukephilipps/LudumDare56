@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23675114042763542}
   m_Layer: 6
   m_Name: juice
-  m_TagString: Fluid
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 23367014578753810}
   m_Layer: 6
   m_Name: lemon
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 64976282932464018}
   m_Layer: 6
   m_Name: glass
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

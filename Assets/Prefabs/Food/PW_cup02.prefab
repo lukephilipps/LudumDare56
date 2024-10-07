@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 64238695771846978}
   m_Layer: 6
   m_Name: cup
-  m_TagString: Untagged
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 23678228012671304}
   m_Layer: 6
   m_Name: coffee
-  m_TagString: Fluid
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,7 +136,7 @@ Transform:
   m_GameObject: {fileID: 1386406678222494}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.00023984072, z: 0}
+  m_LocalPosition: {x: -0, y: -0.264, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

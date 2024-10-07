@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class EspressoMachine : MonoBehaviour, IInteractable
 {
@@ -18,7 +17,7 @@ public class EspressoMachine : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (hitbox.item.id == 50)
+        if (hitbox.item && hitbox.item.id == 50)
         {
             hitbox.item.GetComponent<EspressoCupAnimation>().StartFilling();
             coffeeEffect.gameObject.SetActive(true);
