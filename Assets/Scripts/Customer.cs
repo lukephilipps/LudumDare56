@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using static UnityEngine.Tilemaps.TilemapRenderer;
 
 public enum Satisfaction
 {
@@ -47,7 +48,8 @@ public class Customer : MonoBehaviour
 
     private float waitingPosition;
     private bool stormingOut;
-    
+    private bool gotOrder;
+
     void Start()
     {
         currentSatisfaction = Satisfaction.HAPPY;
@@ -138,7 +140,12 @@ public class Customer : MonoBehaviour
     {
         if (!stormingOut)
         {
+            gotOrder = true;
+
+            agent.SetDestination(transform.position);
             GameManager.Singleton.AddSatisfaction(currentSatisfaction);
+
+            StopAllCoroutines();
             StartCoroutine(TakeOrderAndLeave());
         }
     }
@@ -165,6 +172,15 @@ public class Customer : MonoBehaviour
                 PlaySoundEffect(angySound);
                 yield return new WaitForSeconds(1.8f);
                 break;
+        }
+
+        // Advance line if in the front of the line
+        if (GameManager.Singleton.counter[0].customer &&
+            GameManager.Singleton.counter[0].customer == this)
+        {
+            currentState = OrderState.WAITING_FOR_FOOD;
+            yield return new WaitForSeconds(1.2f);
+            GameManager.Singleton.MoveLine();
         }
 
         // Leave
@@ -251,7 +267,7 @@ public class Customer : MonoBehaviour
                 currentState = OrderState.WAITING_FOR_FOOD;
                 break;
             case OrderState.WAITING_FOR_FOOD:
-                if (!standingInsteadOfSitting)
+                if (!standingInsteadOfSitting && !gotOrder)
                 {
                     transform.position = new Vector3(transform.position.x, waitingPosition + 0.0922936f, transform.position.z);
                 }
