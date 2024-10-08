@@ -7491,6 +7491,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e9944f3a986b10e4d8ddcef4c7f2498f, type: 3}
   - {fileID: 21300000, guid: af4e17d2eaa07c74f8ee46c947d63106, type: 3}
   - {fileID: 21300000, guid: 37f2b45775d066945af1c7c8903df55b, type: 3}
+  - {fileID: 21300000, guid: 090bc23c9fb02ce44bed20b07618ef04, type: 3}
   emotions:
   - {fileID: 21300000, guid: 07c14557f472c5b438d08dc377c3ab53, type: 3}
   - {fileID: 21300000, guid: c6a08d2a1181f3541a371e23033de54f, type: 3}
